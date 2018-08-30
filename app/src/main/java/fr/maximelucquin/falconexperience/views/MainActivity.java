@@ -1,7 +1,9 @@
-package fr.maximelucquin.falconexperience;
+package fr.maximelucquin.falconexperience.views;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import fr.maximelucquin.falconexperience.R;
 
 public class MainActivity extends AppCompatActivity {
 
