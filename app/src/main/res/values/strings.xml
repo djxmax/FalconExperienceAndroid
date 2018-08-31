@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Falcon Experience</string>
+    <string name="title_activity_sequence_list">SequenceListActivity</string>
+    <string name="title_activity_sequence">SequenceActivity</string>
 </resources>
