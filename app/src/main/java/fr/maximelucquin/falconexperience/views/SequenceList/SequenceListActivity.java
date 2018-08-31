@@ -1,13 +1,16 @@
 package fr.maximelucquin.falconexperience.views.SequenceList;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +35,13 @@ public class SequenceListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                addSequence();
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        addSequence();
+        getSequences();
 
         recyclerView = (RecyclerView) findViewById(R.id.sequenceRecyclerView);
 
@@ -51,9 +53,38 @@ public class SequenceListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new SequenceAdapter(sequences));
     }
 
-    public void addSequence() {
-        sequences.add(new Sequence("name 1",null));
-        sequences.add(new Sequence("name 2",null));
+    public void getSequences() {
+        sequences = Sequence.listAll(Sequence.class);
     }
+
+
+    public void addSequence() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Title");
+        alert.setMessage("Message");
+
+        final EditText input = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String name = input.getText().toString();
+                Sequence sequence = new Sequence(name);
+                sequence.save();
+
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
+
+
 
 }
