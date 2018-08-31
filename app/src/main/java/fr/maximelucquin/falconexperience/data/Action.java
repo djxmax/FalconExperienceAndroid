@@ -1,8 +1,12 @@
 package fr.maximelucquin.falconexperience.data;
 
-import java.util.List;
+import com.orm.SugarRecord;
 
-public class Action {
+import java.util.List;
+import java.util.UUID;
+
+public class Action extends SugarRecord<Action> {
+    public String id;
     public List<Item> items;
     public int delay;
     public int duration;
@@ -11,12 +15,21 @@ public class Action {
     public ActionType type;
 
     public Action(List<Item> items, int delay, int duration, boolean blink, int blinkFreq, ActionType type) {
+        this.id = UUID.randomUUID().toString();
         this.items = items;
         this.delay = delay;
         this.duration = duration;
         this.blink = blink;
         this.blinkFreq = blinkFreq;
         this.type = type;
+    }
+
+    public String getIdAction() {
+        return id;
+    }
+
+    public void setIdAction(String id) {
+        this.id = id;
     }
 
     public List<Item> getItems() {

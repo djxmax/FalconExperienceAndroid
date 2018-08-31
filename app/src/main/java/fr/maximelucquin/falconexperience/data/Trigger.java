@@ -1,14 +1,28 @@
 package fr.maximelucquin.falconexperience.data;
 
-import java.util.List;
+import com.orm.SugarRecord;
 
-public class Trigger {
+import java.util.List;
+import java.util.UUID;
+
+public class Trigger extends SugarRecord<Trigger> {
+
+    public String id;
     public List<Item> items;
     public TriggerType type;
 
     public Trigger(List<Item> items, TriggerType type) {
+        this.id = UUID.randomUUID().toString();
         this.items = items;
         this.type = type;
+    }
+
+    public String getIdTrigger() {
+        return id;
+    }
+
+    public void setIdTrigger(String id) {
+        this.id = id;
     }
 
     public List<Item> getItems() {

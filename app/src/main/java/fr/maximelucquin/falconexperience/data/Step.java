@@ -1,27 +1,30 @@
 package fr.maximelucquin.falconexperience.data;
 
-import java.util.List;
+import com.orm.SugarRecord;
 
-public class Step {
+import java.util.List;
+import java.util.UUID;
+
+public class Step extends SugarRecord<Step> {
     public String id;
     public int order;
     public Trigger trigger;
     public List<Action> actions;
     public int timeTrigger;
 
-    public Step(String id, int order, Trigger trigger, List<Action> actions, int timeTrigger) {
-        this.id = id;
+    public Step(int order, Trigger trigger, List<Action> actions, int timeTrigger) {
+        this.id = UUID.randomUUID().toString();
         this.order = order;
         this.trigger = trigger;
         this.actions = actions;
         this.timeTrigger = timeTrigger;
     }
 
-    public String getId() {
+    public String getIdStep() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setIdStep(String id) {
         this.id = id;
     }
 
