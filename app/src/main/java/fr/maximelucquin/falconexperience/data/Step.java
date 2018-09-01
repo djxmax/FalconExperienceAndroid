@@ -1,31 +1,58 @@
 package fr.maximelucquin.falconexperience.data;
 
-import com.orm.SugarRecord;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 import java.util.UUID;
 
-public class Step extends SugarRecord<Step> {
+import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+@Entity(foreignKeys = @ForeignKey(entity = Sequence.class,
+        parentColumns = "id",
+        childColumns = "sequenceId",
+        onDelete = CASCADE))
+public class Step {
+    @NonNull
+    @PrimaryKey
     public String id;
+    public String sequenceId;
     public int order;
+    @Ignore
     public Trigger trigger;
+    @Ignore
     public List<Action> actions;
     public int timeTrigger;
 
-    public Step(int order, Trigger trigger, List<Action> actions, int timeTrigger) {
+    public Step(String sequenceId, int order, Trigger trigger, List<Action> actions, int timeTrigger) {
         this.id = UUID.randomUUID().toString();
+        this.sequenceId = sequenceId;
         this.order = order;
         this.trigger = trigger;
         this.actions = actions;
         this.timeTrigger = timeTrigger;
     }
 
-    public String getIdStep() {
+    public String getStepId() {
         return id;
     }
 
-    public void setIdStep(String id) {
+    public void setStepId(String id) {
         this.id = id;
+    }
+
+    public String getSequenceId() {
+        return sequenceId;
+    }
+
+    public void setSequenceId(String sequenceId) {
+        this.sequenceId = sequenceId;
     }
 
     public int getOrder() {
@@ -58,5 +85,13 @@ public class Step extends SugarRecord<Step> {
 
     public void setTimeTrigger(int timeTrigger) {
         this.timeTrigger = timeTrigger;
+    }
+
+    public void save(Context context) {
+        if (AppDatabase.getAppDatabase(context).stepDAO().getStep(getStepId()) != null) {
+            AppDatabase.getAppDatabase(context).stepDAO().updateStep(this);
+        } else {
+            AppDatabase.getAppDatabase(context).stepDAO().insertStep(this);
+        }
     }
 }

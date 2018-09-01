@@ -9,14 +9,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:replace="android:icon"
-        android:name="com.orm.SugarApp">
-
-        <meta-data android:name="DATABASE" android:value="falconexperience.db" />
-        <meta-data android:name="VERSION" android:value="2" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="fr.maximelucquin.falconexperience" />
+        android:theme="@style/AppTheme">
 
         <activity android:name=".views.MainActivity">
             <intent-filter>
@@ -35,7 +28,7 @@
                 android:value="fr.maximelucquin.falconexperience.views.MainActivity" />
         </activity>
         <activity
-            android:name=".views.SequenceActivity"
+            android:name=".views.Sequence.SequenceActivity"
             android:label="@string/title_activity_sequence"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

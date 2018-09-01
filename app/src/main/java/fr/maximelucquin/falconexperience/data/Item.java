@@ -1,10 +1,15 @@
 package fr.maximelucquin.falconexperience.data;
 
-import com.orm.SugarRecord;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.UUID;
 
-public class Item extends SugarRecord<Item> {
+@Entity
+public class Item {
+    @NonNull
+    @PrimaryKey
     public String id;
     public String name;
     public ItemType type;
@@ -17,11 +22,11 @@ public class Item extends SugarRecord<Item> {
         this.putType = putType;
     }
 
-    public String getIdItem() {
+    public String getItemId() {
         return id;
     }
 
-    public void setIdItem(String id) {
+    public void setItemId(String id) {
         this.id = id;
     }
 

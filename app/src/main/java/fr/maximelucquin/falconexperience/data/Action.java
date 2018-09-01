@@ -1,11 +1,9 @@
 package fr.maximelucquin.falconexperience.data;
 
-import com.orm.SugarRecord;
-
 import java.util.List;
 import java.util.UUID;
 
-public class Action extends SugarRecord<Action> {
+public class Action {
     public String id;
     public List<Item> items;
     public int delay;

@@ -1,6 +1,7 @@
 package fr.maximelucquin.falconexperience.views.SequenceList;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,8 @@ import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Sequence;
+import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+import fr.maximelucquin.falconexperience.views.Sequence.SequenceActivity;
 
 public class SequenceListActivity extends AppCompatActivity {
 
@@ -54,7 +57,8 @@ public class SequenceListActivity extends AppCompatActivity {
     }
 
     public void getSequences() {
-        sequences = Sequence.listAll(Sequence.class);
+        sequences = AppDatabase.getAppDatabase(getApplicationContext()).sequenceDAO().getAllSequences();
+
     }
 
 
@@ -65,15 +69,16 @@ public class SequenceListActivity extends AppCompatActivity {
 
         final EditText input = new EditText(this);
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         alert.setView(input);
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String name = input.getText().toString();
                 Sequence sequence = new Sequence(name);
-                sequence.save();
-
+                sequence.save(getApplicationContext());
+                Intent intent = new Intent(SequenceListActivity.this, SequenceActivity.class);
+                startActivity(intent);
             }
         });
 
