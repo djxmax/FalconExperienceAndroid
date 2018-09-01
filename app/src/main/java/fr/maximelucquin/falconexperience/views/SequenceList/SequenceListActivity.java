@@ -19,7 +19,8 @@ import java.util.List;
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Sequence;
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
-import fr.maximelucquin.falconexperience.views.Sequence.SequenceActivity;
+import fr.maximelucquin.falconexperience.views.Sequence.StepActivity;
+import fr.maximelucquin.falconexperience.views.Tools.RecyclerItemClickListener;
 
 public class SequenceListActivity extends AppCompatActivity {
 
@@ -53,7 +54,22 @@ public class SequenceListActivity extends AppCompatActivity {
 
         //puis créer un MyAdapter, lui fournir notre liste de villes.
         //cet adapter servira à remplir notre recyclerview
-        recyclerView.setAdapter(new SequenceAdapter(sequences));
+        recyclerView.setAdapter(new SequenceAdapter(sequences, getApplicationContext()));
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getApplicationContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Sequence sequence = sequences.get(position);
+                        Intent intent = new Intent(SequenceListActivity.this, StepActivity.class);
+                        intent.putExtra("sequenceId", sequence.getSequenceId());
+                        startActivity(intent);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
     }
 
     public void getSequences() {
@@ -77,7 +93,8 @@ public class SequenceListActivity extends AppCompatActivity {
                 String name = input.getText().toString();
                 Sequence sequence = new Sequence(name);
                 sequence.save(getApplicationContext());
-                Intent intent = new Intent(SequenceListActivity.this, SequenceActivity.class);
+                Intent intent = new Intent(SequenceListActivity.this, StepActivity.class);
+                intent.putExtra("sequenceId", sequence.getSequenceId());
                 startActivity(intent);
             }
         });
@@ -89,7 +106,5 @@ public class SequenceListActivity extends AppCompatActivity {
         });
         alert.show();
     }
-
-
 
 }

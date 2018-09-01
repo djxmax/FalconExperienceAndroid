@@ -1,5 +1,6 @@
 package fr.maximelucquin.falconexperience.views.SequenceList;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import fr.maximelucquin.falconexperience.data.Sequence;
 public class SequenceAdapter extends RecyclerView.Adapter<SequenceViewHolder> {
 
     List<Sequence> list;
+    Context context;
 
-    public SequenceAdapter(List<Sequence> list) {
+    public SequenceAdapter(List<Sequence> list, Context context) {
         this.list = list;
+        this.context = context;
     }
 
     //cette fonction permet de créer les viewHolder
@@ -30,7 +33,7 @@ public class SequenceAdapter extends RecyclerView.Adapter<SequenceViewHolder> {
     @Override
     public void onBindViewHolder(SequenceViewHolder sequenceViewHolder, int position) {
         Sequence sequence = list.get(position);
-        sequenceViewHolder.bind(sequence);
+        sequenceViewHolder.bind(sequence, context);
     }
 
     @Override

@@ -30,6 +30,10 @@ public class Step {
     public List<Action> actions;
     public int timeTrigger;
 
+    public Step() {
+        this.id = UUID.randomUUID().toString();
+    }
+
     public Step(String sequenceId, int order, Trigger trigger, List<Action> actions, int timeTrigger) {
         this.id = UUID.randomUUID().toString();
         this.sequenceId = sequenceId;

@@ -28,7 +28,7 @@
                 android:value="fr.maximelucquin.falconexperience.views.MainActivity" />
         </activity>
         <activity
-            android:name=".views.Sequence.SequenceActivity"
+            android:name=".views.Sequence.StepActivity"
             android:label="@string/title_activity_sequence"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

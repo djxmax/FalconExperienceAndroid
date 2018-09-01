@@ -26,15 +26,8 @@
          pour avoir une organisation verticale nous devons
          donc rajouter un LinearLayout -->
 
-        <ImageView
-            android:id="@+id/sequence_image"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/falcon" />
-
         <TextView
-            android:id="@+id/sequence_name"
+            android:id="@+id/step_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
@@ -45,7 +38,18 @@
             tools:text="Paris" />
 
         <TextView
-            android:id="@+id/sequence_step"
+            android:id="@+id/step_trigger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="sans-serif"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            tools:text="Paris" />
+
+        <TextView
+            android:id="@+id/step_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
