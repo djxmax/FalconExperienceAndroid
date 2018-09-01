@@ -3,20 +3,25 @@ package fr.maximelucquin.falconexperience.data.database;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
+import fr.maximelucquin.falconexperience.data.Actiion;
+import fr.maximelucquin.falconexperience.data.Item;
 import fr.maximelucquin.falconexperience.data.Sequence;
 import fr.maximelucquin.falconexperience.data.Step;
+import fr.maximelucquin.falconexperience.data.Triggeer;
 
-@Database(entities = {Sequence.class, Step.class}, version = 1)
+@Database(entities = {Sequence.class, Step.class, Triggeer.class, Actiion.class, Item.class}, version = 1)
+@TypeConverters({ActiionTypeConverter.class,ItemTypeConverter.class,ItemPutTypeConverter.class,TriggeerTypeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
 
     public abstract SequenceDAO sequenceDAO();
     public abstract StepDAO stepDAO();
-    public abstract TriggerDAO triggerDAO();
-
+    public abstract TriggeerDAO triggeerDAO();
+    public abstract ActiionDAO actiionDAO();
     public abstract ItemDAO itemDAO();
 
     public static AppDatabase getAppDatabase(Context context) {

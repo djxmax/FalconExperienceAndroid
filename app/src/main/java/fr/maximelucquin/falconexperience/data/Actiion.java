@@ -2,9 +2,17 @@ package fr.maximelucquin.falconexperience.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 import java.util.UUID;
+
+import fr.maximelucquin.falconexperience.data.database.ActiionTypeConverter;
+import fr.maximelucquin.falconexperience.data.database.AppDatabase;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -12,22 +20,27 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         parentColumns = "id",
         childColumns = "stepId",
         onDelete = CASCADE))
-public class Action {
+public class Actiion {
+    @NonNull
+    @PrimaryKey
     public String id;
+    public String stepId;
+    @Ignore
     public List<Item> items;
     public int delay;
     public int duration;
     public boolean blink;
     public int blinkFreq;
-    public ActionType type;
+    @TypeConverters(ActiionTypeConverter.class)
+    public ActiionType type;
 
-    public enum ActionType {
+    public enum ActiionType {
         OFF(0),
         ON(1);
 
         private int code;
 
-        ActionType(int code) {
+        ActiionType(int code) {
             this.code = code;
         }
 
@@ -36,8 +49,11 @@ public class Action {
         }
     }
 
+    public Actiion() {
+        this.id = UUID.randomUUID().toString();
+    }
 
-    public Action(List<Item> items, int delay, int duration, boolean blink, int blinkFreq, ActionType type) {
+    public Actiion(List<Item> items, int delay, int duration, boolean blink, int blinkFreq, ActiionType type) {
         this.id = UUID.randomUUID().toString();
         this.items = items;
         this.delay = delay;
@@ -47,15 +63,26 @@ public class Action {
         this.type = type;
     }
 
-    public String getIdAction() {
+    public String getIdActiion() {
         return id;
     }
 
-    public void setIdAction(String id) {
+    public void setIdActiion(String id) {
         this.id = id;
     }
 
-    public List<Item> getItems() {
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public List<Item> getItems(Context context) {
+        if (items == null) {
+            items = AppDatabase.getAppDatabase(context).itemDAO().getItemsForAction(getIdActiion());
+        }
         return items;
     }
 
@@ -95,11 +122,25 @@ public class Action {
         this.blinkFreq = blinkFreq;
     }
 
-    public ActionType getType() {
+    public ActiionType getType() {
         return type;
     }
 
-    public void setType(ActionType type) {
+    public void setType(ActiionType type) {
         this.type = type;
+    }
+
+    public void save(Context context) {
+        if (AppDatabase.getAppDatabase(context).actiionDAO().getActiion(getIdActiion()) != null) {
+            AppDatabase.getAppDatabase(context).actiionDAO().updateActiion(this);
+        } else {
+            AppDatabase.getAppDatabase(context).actiionDAO().insertActiion(this);
+        }
+
+        if (items != null) {
+            for (Item item: items) {
+                item.save(context);
+            }
+        }
     }
 }

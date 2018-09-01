@@ -25,21 +25,21 @@ public class Step {
     public String sequenceId;
     public int order;
     @Ignore
-    public Trigger trigger;
+    public Triggeer triggeer;
     @Ignore
-    public List<Action> actions;
+    public List<Actiion> actiions;
     public int timeTrigger;
 
     public Step() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public Step(String sequenceId, int order, Trigger trigger, List<Action> actions, int timeTrigger) {
+    public Step(String sequenceId, int order, Triggeer triggeer, List<Actiion> actiions, int timeTrigger) {
         this.id = UUID.randomUUID().toString();
         this.sequenceId = sequenceId;
         this.order = order;
-        this.trigger = trigger;
-        this.actions = actions;
+        this.triggeer = triggeer;
+        this.actiions = actiions;
         this.timeTrigger = timeTrigger;
     }
 
@@ -67,20 +67,32 @@ public class Step {
         this.order = order;
     }
 
-    public Trigger getTrigger() {
-        return trigger;
+    public Triggeer getTriggeer(Context context) {
+        if (triggeer == null) {
+            List<Triggeer> triggeers = AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeersForStep(getStepId());
+            if (triggeers != null) {
+                if (triggeers.size() > 0) {
+                    triggeer = AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeersForStep(getStepId()).get(0);
+                }
+            }
+
+        }
+        return triggeer;
     }
 
-    public void setTrigger(Trigger trigger) {
-        this.trigger = trigger;
+    public void setTrigger(Triggeer trigger) {
+        this.triggeer = trigger;
     }
 
-    public List<Action> getActions() {
-        return actions;
+    public List<Actiion> getActiions(Context context) {
+        if (actiions == null) {
+            actiions = AppDatabase.getAppDatabase(context).actiionDAO().getActiionForStep(getStepId());
+        }
+        return actiions;
     }
 
-    public void setActions(List<Action> actions) {
-        this.actions = actions;
+    public void setActiions(List<Actiion> actions) {
+        this.actiions = actiions;
     }
 
     public int getTimeTrigger() {
@@ -96,6 +108,16 @@ public class Step {
             AppDatabase.getAppDatabase(context).stepDAO().updateStep(this);
         } else {
             AppDatabase.getAppDatabase(context).stepDAO().insertStep(this);
+        }
+
+        if (actiions != null) {
+            for (Actiion actiion: actiions) {
+                actiion.save(context);
+            }
+        }
+
+        if (triggeer != null) {
+            triggeer.save(context);
         }
     }
 }

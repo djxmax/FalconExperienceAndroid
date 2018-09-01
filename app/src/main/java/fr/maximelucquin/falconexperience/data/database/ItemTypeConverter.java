@@ -3,7 +3,6 @@ package fr.maximelucquin.falconexperience.data.database;
 import android.arch.persistence.room.TypeConverter;
 
 import fr.maximelucquin.falconexperience.data.Item;
-import fr.maximelucquin.falconexperience.data.Trigger;
 
 import static fr.maximelucquin.falconexperience.data.Item.ItemType.ALARM;
 import static fr.maximelucquin.falconexperience.data.Item.ItemType.BUTTON;
@@ -15,8 +14,6 @@ import static fr.maximelucquin.falconexperience.data.Item.ItemType.ROUNDLED;
 import static fr.maximelucquin.falconexperience.data.Item.ItemType.SOUND;
 import static fr.maximelucquin.falconexperience.data.Item.ItemType.SQUARELED;
 import static fr.maximelucquin.falconexperience.data.Item.ItemType.VIDEO;
-import static fr.maximelucquin.falconexperience.data.Trigger.TriggerType.SWITCH_OFF;
-import static fr.maximelucquin.falconexperience.data.Trigger.TriggerType.SWITCH_ON;
 
 public class ItemTypeConverter {
     @TypeConverter
@@ -47,7 +44,7 @@ public class ItemTypeConverter {
     }
 
     @TypeConverter
-    public static Integer toInteger(Item.ItemType itemType) {
+    public static int toInteger(Item.ItemType itemType) {
         return itemType.getCode();
     }
 }

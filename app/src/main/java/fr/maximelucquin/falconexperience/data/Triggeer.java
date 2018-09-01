@@ -12,32 +12,32 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
-import fr.maximelucquin.falconexperience.data.database.TriggerTypeConverter;
+import fr.maximelucquin.falconexperience.data.database.TriggeerTypeConverter;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "_trigger",foreignKeys = @ForeignKey(entity = Step.class,
+@Entity(tableName = "triggeer",foreignKeys = @ForeignKey(entity = Step.class,
         parentColumns = "id",
         childColumns = "stepId",
         onDelete = CASCADE))
-public class Trigger {
+public class Triggeer {
     @NonNull
     @PrimaryKey
     public String id;
     public String stepId;
     @Ignore
     public List<Item> items;
-    @TypeConverters(TriggerTypeConverter.class)
-    public TriggerType type;
+    @TypeConverters(TriggeerTypeConverter.class)
+    public TriggeerType type;
 
 
-    public enum TriggerType {
+    public enum TriggeerType {
         SWITCH_OFF(0),
         SWITCH_ON(1);
 
         private int code;
 
-        TriggerType(int code) {
+        TriggeerType(int code) {
             this.code = code;
         }
 
@@ -46,17 +46,21 @@ public class Trigger {
         }
     }
 
-    public Trigger(List<Item> items, TriggerType type) {
+    public Triggeer() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public Triggeer(List<Item> items, TriggeerType type) {
         this.id = UUID.randomUUID().toString();
         this.items = items;
         this.type = type;
     }
 
-    public String getTriggerId() {
+    public String getTriggeerId() {
         return id;
     }
 
-    public void setTriggerId(String id) {
+    public void setTriggeerId(String id) {
         this.id = id;
     }
 
@@ -70,7 +74,7 @@ public class Trigger {
 
     public List<Item> getItems(Context context) {
         if (items == null) {
-            items = AppDatabase.getAppDatabase(context).itemDAO().getItemsForTrigger(getTriggerId());
+            items = AppDatabase.getAppDatabase(context).itemDAO().getItemsForTrigger(getTriggeerId());
         }
         return items;
     }
@@ -79,19 +83,19 @@ public class Trigger {
         this.items = items;
     }
 
-    public TriggerType getType() {
+    public TriggeerType getType() {
         return type;
     }
 
-    public void setType(TriggerType type) {
+    public void setType(TriggeerType type) {
         this.type = type;
     }
 
     public void save(Context context) {
-        if (AppDatabase.getAppDatabase(context).triggerDAO().getTrigger(getTriggerId()) != null) {
-            AppDatabase.getAppDatabase(context).triggerDAO().updateTrigger(this);
+        if (AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeer(getTriggeerId()) != null) {
+            AppDatabase.getAppDatabase(context).triggeerDAO().updateTriggeer(this);
         } else {
-            AppDatabase.getAppDatabase(context).triggerDAO().insertTrigger(this);
+            AppDatabase.getAppDatabase(context).triggeerDAO().insertTriggeer(this);
         }
 
         if (items != null) {

@@ -25,6 +25,7 @@ import fr.maximelucquin.falconexperience.views.Tools.RecyclerItemClickListener;
 public class SequenceListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private SequenceAdapter adapter;
 
     private List<Sequence> sequences = new ArrayList<>();
 
@@ -49,12 +50,10 @@ public class SequenceListActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.sequenceRecyclerView);
 
-        //définit l'agencement des cellules, ici de façon verticale, comme une ListView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //puis créer un MyAdapter, lui fournir notre liste de villes.
-        //cet adapter servira à remplir notre recyclerview
-        recyclerView.setAdapter(new SequenceAdapter(sequences, getApplicationContext()));
+        adapter = new SequenceAdapter(sequences, getApplicationContext());
+        recyclerView.setAdapter(adapter);
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
@@ -70,6 +69,15 @@ public class SequenceListActivity extends AppCompatActivity {
                     }
                 })
         );
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        getSequences();
+        adapter.notifyDataSetChanged();
+
     }
 
     public void getSequences() {

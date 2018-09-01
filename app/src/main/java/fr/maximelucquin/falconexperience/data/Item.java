@@ -16,11 +16,11 @@ import fr.maximelucquin.falconexperience.data.database.ItemTypeConverter;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = {
-        @ForeignKey(entity = Action.class,
+        @ForeignKey(entity = Actiion.class,
                 parentColumns = "id",
                 childColumns = "actionId",
                 onDelete = CASCADE),
-        @ForeignKey(entity = Trigger.class,
+        @ForeignKey(entity = Triggeer.class,
                 parentColumns = "id",
                 childColumns = "actionId",
                 onDelete = CASCADE)}
@@ -32,6 +32,7 @@ public class Item {
     public String actionId;
     public String triggerId;
     public String name;
+    public String fileURL;
     @TypeConverters(ItemTypeConverter.class)
     public ItemType type;
     @TypeConverters(ItemPutTypeConverter.class)
@@ -75,6 +76,10 @@ public class Item {
         }
     }
 
+    public Item() {
+        this.id = UUID.randomUUID().toString();
+    }
+
     public Item(String name, ItemType type, ItemPutType putType) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
@@ -112,6 +117,14 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFileURL() {
+        return fileURL;
+    }
+
+    public void setFileURL(String fileURL) {
+        this.fileURL = fileURL;
     }
 
     public ItemType getType() {

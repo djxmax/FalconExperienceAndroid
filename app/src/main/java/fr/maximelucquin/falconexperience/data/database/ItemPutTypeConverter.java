@@ -21,7 +21,7 @@ public class ItemPutTypeConverter {
     }
 
     @TypeConverter
-    public static Integer toInteger(Item.ItemPutType itemPutType) {
+    public static int toInteger(Item.ItemPutType itemPutType) {
         return itemPutType.getCode();
     }
 }
