@@ -18,7 +18,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         parentColumns = "id",
         childColumns = "sequenceId",
         onDelete = CASCADE))
-public class Step {
+public class Step implements Comparable<Step> {
     @NonNull
     @PrimaryKey
     public String id;
@@ -118,6 +118,15 @@ public class Step {
 
         if (triggeer != null) {
             triggeer.save(context);
+        }
+    }
+
+    @Override
+    public int compareTo(Step step) {
+        if (this.getOrder() < step.getOrder()){
+            return -1;
+        }else{
+            return 1;
         }
     }
 }

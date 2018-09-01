@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
@@ -21,6 +22,7 @@ import fr.maximelucquin.falconexperience.views.SequenceList.SequenceAdapter;
 public class StepActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private StepAdapter adapter;
     public Sequence sequence;
     private List<Step> steps = new ArrayList<>();
 
@@ -35,7 +37,7 @@ public class StepActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                createStep();
             }
         });
 
@@ -45,17 +47,38 @@ public class StepActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.stepRecyclerView);
 
-        //définit l'agencement des cellules, ici de façon verticale, comme une ListView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //puis créer un MyAdapter, lui fournir notre liste de villes.
-        //cet adapter servira à remplir notre recyclerview
-        recyclerView.setAdapter(new StepAdapter(steps, getApplicationContext()));
+        adapter = new StepAdapter(steps, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        getSteps();
+        adapter.notifyDataSetChanged();
+
     }
 
     public void getSteps() {
         steps = AppDatabase.getAppDatabase(getApplicationContext()).stepDAO().getStepsForSequence(sequence.getSequenceId());
+        Collections.sort(steps);
+    }
 
+
+    public void createStep() {
+        Step step = new Step();
+        step.setOrder(steps.size());
+        step.setSequenceId(sequence.getSequenceId());
+        step.setTimeTrigger(0);
+        steps.add(step);
+        System.out.println(steps);
+        step.save(getApplicationContext());
+        adapter.notifyItemInserted(steps.size() - 1);
+        recyclerView.invalidate();
     }
 
 }

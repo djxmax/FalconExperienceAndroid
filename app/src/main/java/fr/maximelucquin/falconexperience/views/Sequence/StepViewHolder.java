@@ -23,7 +23,8 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bind(Step step, Context context, int position){
-        stepOrder.setText(position + 1);
+        int order = step.getOrder() + 1;
+        stepOrder.setText(""+order);
         if (step.timeTrigger != 0) {
             stepTrigger.setText("Temps de déclenchement : "+step.getTimeTrigger());
         } else {
