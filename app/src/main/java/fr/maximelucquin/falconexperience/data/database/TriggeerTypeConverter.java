@@ -22,6 +22,9 @@ public class TriggeerTypeConverter {
 
     @TypeConverter
     public static int toInteger(Triggeer.TriggeerType triggeerType) {
-        return triggeerType.getCode();
+        if (triggeerType != null) {
+            return triggeerType.getCode();
+        }
+        return 0;
     }
 }

@@ -19,12 +19,6 @@ public interface ItemDAO {
     @Query("SELECT * FROM item")
     public List<Item> getAllItems();
 
-    @Query("SELECT * FROM item WHERE triggerId=:triggerId")
-    public List<Item> getItemsForTrigger(String triggerId);
-
-    @Query("SELECT * FROM item WHERE actionId=:actionId")
-    public List<Item> getItemsForAction(String actionId);
-
     @Insert
     public void insertItem(Item item);
 

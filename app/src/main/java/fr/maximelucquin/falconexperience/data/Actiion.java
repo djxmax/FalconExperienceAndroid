@@ -81,7 +81,7 @@ public class Actiion {
 
     public List<Item> getItems(Context context) {
         if (items == null) {
-            items = AppDatabase.getAppDatabase(context).itemDAO().getItemsForAction(getIdActiion());
+            items = AppDatabase.getAppDatabase(context).actiionItemJoinDAO().getItemForActiion(getIdActiion());
         }
         return items;
     }
@@ -137,10 +137,10 @@ public class Actiion {
             AppDatabase.getAppDatabase(context).actiionDAO().insertActiion(this);
         }
 
-        if (items != null) {
+        /*if (items != null) {
             for (Item item: items) {
                 item.save(context);
             }
-        }
+        }*/
     }
 }

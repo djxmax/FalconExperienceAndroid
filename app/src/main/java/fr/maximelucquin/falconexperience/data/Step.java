@@ -129,4 +129,17 @@ public class Step implements Comparable<Step> {
             return 1;
         }
     }
+
+    public static List<Step> reorderSteps(Context context, List<Step> steps) {
+        for(int i = 0; i < steps.size(); i++) {
+            steps.get(i).setOrder(i);
+        }
+
+        if (steps != null) {
+            for (Step step: steps) {
+                step.save(context);
+            }
+        }
+        return steps;
+    }
 }

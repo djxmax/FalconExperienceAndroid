@@ -22,6 +22,9 @@ public class ActiionTypeConverter {
 
     @TypeConverter
     public static int toInteger(Actiion.ActiionType actiionType) {
-        return actiionType.getCode();
+        if (actiionType != null) {
+            return actiionType.getCode();
+        }
+        return 0;
     }
 }

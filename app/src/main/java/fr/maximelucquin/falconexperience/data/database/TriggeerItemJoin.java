@@ -3,6 +3,8 @@ package fr.maximelucquin.falconexperience.data.database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
 import fr.maximelucquin.falconexperience.data.Item;
 import fr.maximelucquin.falconexperience.data.Triggeer;
@@ -17,11 +19,13 @@ import fr.maximelucquin.falconexperience.data.Triggeer;
                         parentColumns = "id",
                         childColumns = "itemId")
         })
-public class TriggerItemJoin {
+public class TriggeerItemJoin {
+    @NonNull
     public String triggeerId;
+    @NonNull
     public String itemId;
 
-    public TriggerItemJoin(String triggeerId, String itemId) {
+    public TriggeerItemJoin(String triggeerId, String itemId) {
         this.triggeerId = triggeerId;
         this.itemId = itemId;
     }
@@ -40,5 +44,9 @@ public class TriggerItemJoin {
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
+    }
+
+    public static void saveTriggeer(Context context, String triggerId, String itemId) {
+        AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().insert(new TriggeerItemJoin(triggerId, itemId));
     }
 }

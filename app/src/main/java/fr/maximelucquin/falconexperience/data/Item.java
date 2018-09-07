@@ -15,22 +15,11 @@ import fr.maximelucquin.falconexperience.data.database.ItemTypeConverter;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = {
-        @ForeignKey(entity = Actiion.class,
-                parentColumns = "id",
-                childColumns = "actionId",
-                onDelete = CASCADE),
-        @ForeignKey(entity = Triggeer.class,
-                parentColumns = "id",
-                childColumns = "actionId",
-                onDelete = CASCADE)}
-)
+@Entity
 public class Item {
     @NonNull
     @PrimaryKey
     public String id;
-    public String actionId;
-    public String triggerId;
     public String name;
     public String fileURL;
     @TypeConverters(ItemTypeConverter.class)
@@ -93,22 +82,6 @@ public class Item {
 
     public void setItemId(String id) {
         this.id = id;
-    }
-
-    public String getActionId() {
-        return actionId;
-    }
-
-    public void setActionId(String actionId) {
-        this.actionId = actionId;
-    }
-
-    public String getTriggerId() {
-        return triggerId;
-    }
-
-    public void setTriggerId(String triggerId) {
-        this.triggerId = triggerId;
     }
 
     public String getName() {

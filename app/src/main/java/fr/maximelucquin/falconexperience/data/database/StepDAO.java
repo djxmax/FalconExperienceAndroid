@@ -15,7 +15,7 @@ import fr.maximelucquin.falconexperience.data.Step;
 public interface StepDAO {
 
     @Query("SELECT * FROM step WHERE id=:stepId")
-    public Sequence getStep(String stepId);
+    public Step getStep(String stepId);
 
     @Query("SELECT * FROM step")
     public List<Step> getAllSteps();

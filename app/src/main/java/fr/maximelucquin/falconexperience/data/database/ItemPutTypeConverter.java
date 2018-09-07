@@ -22,6 +22,9 @@ public class ItemPutTypeConverter {
 
     @TypeConverter
     public static int toInteger(Item.ItemPutType itemPutType) {
-        return itemPutType.getCode();
+        if (itemPutType != null) {
+            return itemPutType.getCode();
+        }
+        return 0;
     }
 }

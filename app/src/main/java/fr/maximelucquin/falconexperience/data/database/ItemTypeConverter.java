@@ -45,6 +45,9 @@ public class ItemTypeConverter {
 
     @TypeConverter
     public static int toInteger(Item.ItemType itemType) {
-        return itemType.getCode();
+        if (itemType != null) {
+            return itemType.getCode();
+        }
+        return 0;
     }
 }
