@@ -23,4 +23,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, SequenceListActivity.class);
         startActivity(intent);
     }
+
+    public void openControlDeviceActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, ControlDeviceActivity.class);
+        startActivity(intent);
+    }
 }
