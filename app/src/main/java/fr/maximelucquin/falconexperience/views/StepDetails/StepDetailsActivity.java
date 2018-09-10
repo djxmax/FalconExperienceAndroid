@@ -38,12 +38,22 @@ public class StepDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        step = AppDatabase.getAppDatabase(getApplicationContext()).stepDAO().getStep(step.getStepId());
+    }
+
     public void openTriggerActivity(View view) {
         Triggeer triggeer = null;
         if (step.getTriggeer(getApplicationContext()) != null) {
+            System.out.println("reuse");
             triggeer = step.getTriggeer(getApplicationContext());
         } else {
+            System.out.println("new");
             triggeer = new Triggeer();
+            triggeer.setStepId(step.getStepId());
             triggeer.save(getApplicationContext());
         }
         Intent intent = new Intent(StepDetailsActivity.this, TriggerDetailsActivity.class);

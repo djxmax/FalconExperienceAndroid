@@ -1,14 +1,18 @@
 package fr.maximelucquin.falconexperience.views.TriggerDetails;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import fr.maximelucquin.falconexperience.R;
+import fr.maximelucquin.falconexperience.data.Item;
 import fr.maximelucquin.falconexperience.data.Step;
 import fr.maximelucquin.falconexperience.data.Triggeer;
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
@@ -43,7 +47,7 @@ public class TriggerDetailsActivity extends AppCompatActivity {
 
         triggerItems.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ItemAdapter(triggeer.getItems(getApplicationContext()), this);
+        adapter = new ItemAdapter(triggeer.getItems(getApplicationContext()), this, null);
         triggerItems.setAdapter(adapter);
 
         triggerItems.addOnItemTouchListener(
@@ -61,6 +65,19 @@ public class TriggerDetailsActivity extends AppCompatActivity {
                 })
         );
 
+        setType();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        triggeer = AppDatabase.getAppDatabase(getApplicationContext()).triggeerDAO().getTriggeer(triggeer.getTriggeerId());
+        adapter = new ItemAdapter(triggeer.getItems(getApplicationContext()), this, null);
+        triggerItems.setAdapter(adapter);
+    }
+
+    public void setType() {
         if (triggeer.getType() != null) {
             switch (triggeer.getType()) {
                 case SWITCH_OFF:
@@ -86,12 +103,44 @@ public class TriggerDetailsActivity extends AppCompatActivity {
     }
 
     public void editType(View view) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(this);
+        //builderSingle.setIcon(R.drawable.ic_launcher);
+        builderSingle.setTitle("Selection du type :");
 
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("on -> off");
+        arrayAdapter.add("off -> on");
+
+        builderSingle.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog.Builder builder = builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        triggeer.setType(Triggeer.TriggeerType.SWITCH_OFF);
+                        break;
+                    case 1:
+                        triggeer.setType(Triggeer.TriggeerType.SWITCH_ON);
+                        break;
+                    default:
+                        break;
+                }
+                setType();
+            }
+        });
+        builderSingle.show();
     }
 
     public void addTrigger(View view) {
         Intent intent = new Intent(TriggerDetailsActivity.this, ItemsActivity.class);
         intent.putExtra("triggeerId",triggeer.getTriggeerId());
+        intent.putExtra("input",true);
         startActivity(intent);
     }
 }

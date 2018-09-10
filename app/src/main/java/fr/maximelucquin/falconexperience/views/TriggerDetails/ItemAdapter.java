@@ -16,11 +16,13 @@ import fr.maximelucquin.falconexperience.views.SequenceList.SequenceViewHolder;
 public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     List<Item> list;
+    List<Item> selectedItem;
     Context context;
 
-    public ItemAdapter(List<Item> list, Context context) {
+    public ItemAdapter(List<Item> list, Context context, List<Item> selectedItem) {
         this.list = list;
         this.context = context;
+        this.selectedItem = selectedItem;
     }
 
     //cette fonction permet de créer les viewHolder
@@ -35,7 +37,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public void onBindViewHolder(ItemViewHolder itemViewHolder, int position) {
         Item item = list.get(position);
-        itemViewHolder.bind(item, context);
+        itemViewHolder.bind(item, context, selectedItem);
     }
 
     @Override

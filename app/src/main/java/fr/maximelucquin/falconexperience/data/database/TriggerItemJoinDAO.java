@@ -15,9 +15,9 @@ public interface TriggerItemJoinDAO {
     @Insert
     void insert(TriggeerItemJoin triggerItemJoin);
 
-    @Query("SELECT * FROM triggeer INNER JOIN triggeer_item_join ON triggeer.id=triggeer_item_join.triggeerId WHERE triggeer_item_join.itemId=:itemId")
+    @Query("SELECT triggeer.* FROM triggeer INNER JOIN triggeer_item_join ON triggeer.id=triggeer_item_join.triggeerId WHERE triggeer_item_join.itemId=:itemId")
     List<Triggeer> getTriggerForItem(final String itemId);
 
-    @Query("SELECT * FROM item INNER JOIN triggeer_item_join ON item.id=triggeer_item_join.itemId WHERE triggeer_item_join.triggeerId=:triggeerId")
+    @Query("SELECT item.* FROM item INNER JOIN triggeer_item_join ON item.id=triggeer_item_join.itemId WHERE triggeer_item_join.triggeerId=:triggeerId")
     List<Item> getItemForTriggeer(final String triggeerId);
 }

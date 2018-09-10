@@ -50,9 +50,7 @@ public class Sequence {
     }
 
     public List<Step> getSteps(Context context) {
-        if (steps == null) {
-            steps = AppDatabase.getAppDatabase(context).stepDAO().getStepsForSequence(getSequenceId());
-        }
+        steps = AppDatabase.getAppDatabase(context).stepDAO().getStepsForSequence(getSequenceId());
         return steps;
     }
 

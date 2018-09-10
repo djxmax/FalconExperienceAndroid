@@ -80,9 +80,8 @@ public class Actiion {
     }
 
     public List<Item> getItems(Context context) {
-        if (items == null) {
-            items = AppDatabase.getAppDatabase(context).actiionItemJoinDAO().getItemForActiion(getIdActiion());
-        }
+        items = AppDatabase.getAppDatabase(context).actiionItemJoinDAO().getItemForActiion(getIdActiion());
+
         return items;
     }
 

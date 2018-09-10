@@ -7,6 +7,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.List;
 import java.util.UUID;
 
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
@@ -123,4 +124,14 @@ public class Item {
             AppDatabase.getAppDatabase(context).itemDAO().insertItem(this);
         }
     }
+
+    public static boolean containsItem(List<Item> list, String id) {
+        for(Item o : list) {
+            if(o != null && o.getItemId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

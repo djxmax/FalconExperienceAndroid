@@ -73,9 +73,7 @@ public class Triggeer {
     }
 
     public List<Item> getItems(Context context) {
-        if (items == null) {
-            items = AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().getItemForTriggeer(getTriggeerId());
-        }
+        items = AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().getItemForTriggeer(getTriggeerId());
         return items;
     }
 

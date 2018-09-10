@@ -8,7 +8,8 @@
 
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="2dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    android:id="@+id/item_card">
 
     <!-- Les CardView possèdent des attributs supplémentaires dont
          - cardBackgroundColor
@@ -20,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/backgroundClear"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/item_card_layout">
 
         <!-- Les CardView agissent comme des FrameLayout,
          pour avoir une organisation verticale nous devons

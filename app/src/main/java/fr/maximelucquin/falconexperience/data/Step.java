@@ -68,7 +68,6 @@ public class Step implements Comparable<Step> {
     }
 
     public Triggeer getTriggeer(Context context) {
-        if (triggeer == null) {
             List<Triggeer> triggeers = AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeersForStep(getStepId());
             if (triggeers != null) {
                 if (triggeers.size() > 0) {
@@ -76,7 +75,7 @@ public class Step implements Comparable<Step> {
                 }
             }
 
-        }
+
         return triggeer;
     }
 
@@ -85,9 +84,7 @@ public class Step implements Comparable<Step> {
     }
 
     public List<Actiion> getActiions(Context context) {
-        if (actiions == null) {
-            actiions = AppDatabase.getAppDatabase(context).actiionDAO().getActiionForStep(getStepId());
-        }
+        actiions = AppDatabase.getAppDatabase(context).actiionDAO().getActiionForStep(getStepId());
         return actiions;
     }
 

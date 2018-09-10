@@ -1,20 +1,21 @@
 package fr.maximelucquin.falconexperience.views.TriggerDetails;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Item;
-import fr.maximelucquin.falconexperience.data.Sequence;
-
-import static fr.maximelucquin.falconexperience.data.Item.ItemType.LED;
-import static fr.maximelucquin.falconexperience.data.Item.ItemType.LEDSTRIP;
 
 public class ItemViewHolder extends RecyclerView.ViewHolder{
 
+    private CardView itemCard;
+    private LinearLayout itemCardLayout;
     private TextView itemName;
     private TextView itemType;
     private TextView itemPutType;
@@ -24,12 +25,14 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
     public ItemViewHolder(View itemView) {
         super(itemView);
 
+        itemCard = (CardView) itemView.findViewById(R.id.item_card);
+        itemCardLayout = (LinearLayout) itemView.findViewById(R.id.item_card_layout);
         itemName = (TextView) itemView.findViewById(R.id.item_name);
         itemType = (TextView) itemView.findViewById(R.id.item_type);
         itemPutType = (TextView) itemView.findViewById(R.id.item_put_type);
     }
 
-    public void bind(Item item, Context context){
+    public void bind(Item item, Context context, List<Item> selectedList){
         itemName.setText(item.getName());
 
         if (item.getType() != null) {
@@ -80,6 +83,17 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
             }
         } else {
             itemPutType.setText("Inconnu");
+        }
+
+        if (selectedList != null) {
+            if (Item.containsItem(selectedList,item.getItemId())) {
+                itemCardLayout.setBackgroundResource(R.color.colorAccent);
+            } else {
+                itemCardLayout.setBackgroundResource(R.color.backgroundClear);
+
+            }
+        } else {
+            itemCardLayout.setBackgroundResource(R.color.backgroundClear);
         }
 
     }
