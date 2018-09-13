@@ -11,6 +11,7 @@ import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Step;
 import fr.maximelucquin.falconexperience.data.Triggeer;
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+import fr.maximelucquin.falconexperience.views.ActionList.ActionListActivity;
 import fr.maximelucquin.falconexperience.views.Sequence.StepActivity;
 import fr.maximelucquin.falconexperience.views.TriggerDetails.TriggerDetailsActivity;
 
@@ -63,7 +64,9 @@ public class StepDetailsActivity extends AppCompatActivity {
     }
 
     public void openActionsActivity(View view) {
-
+        Intent intent = new Intent(StepDetailsActivity.this, ActionListActivity.class);
+        intent.putExtra("stepId",step.getStepId());
+        startActivity(intent);
     }
 
     public void saveStep(View view) {

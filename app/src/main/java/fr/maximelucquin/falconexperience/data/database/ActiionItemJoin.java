@@ -46,7 +46,7 @@ public class ActiionItemJoin {
         this.itemId = itemId;
     }
 
-    public void saveTriggeer(Context context, String actionId, String itemId) {
+    public static void saveItems(Context context, String actionId, String itemId) {
         AppDatabase.getAppDatabase(context).actiionItemJoinDAO().insert(new ActiionItemJoin(actionId, itemId));
     }
 }

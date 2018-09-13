@@ -14,6 +14,7 @@ import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Item;
+import fr.maximelucquin.falconexperience.data.database.ActiionItemJoin;
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
 import fr.maximelucquin.falconexperience.data.database.TriggeerItemJoin;
 import fr.maximelucquin.falconexperience.views.ItemDetails.ItemDetailsActivity;
@@ -29,6 +30,7 @@ public class ItemsActivity extends AppCompatActivity {
     private List<Item> items;
     private List<Item> selectedItems;
     private String triggeerId;
+    private String actiionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,8 @@ public class ItemsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        triggeerId = getIntent().getExtras().getString("triggeerId");
+        triggeerId = getIntent().getExtras().getString("triggeerId", "");
+        actiionId = getIntent().getExtras().getString("actiionId", "");
         input = getIntent().getExtras().getBoolean("input", false);
 
         getData();
@@ -88,8 +91,12 @@ public class ItemsActivity extends AppCompatActivity {
 
     public void getData() {
         getAllItems();
-        if (triggeerId != null) {
+        if (triggeerId != null && !triggeerId.isEmpty()) {
             getTriggerItems();
+        }
+
+        if (actiionId != null && !actiionId.isEmpty()) {
+            getActiionItems();
         }
     }
 
@@ -120,11 +127,19 @@ public class ItemsActivity extends AppCompatActivity {
         selectedItems = AppDatabase.getAppDatabase(getApplicationContext()).triggeerItemJoinDAO().getItemForTriggeer(triggeerId);
     }
 
+    public void getActiionItems() {
+        selectedItems = AppDatabase.getAppDatabase(getApplicationContext()).actiionItemJoinDAO().getItemForActiion(actiionId);
+    }
+
     public void saveItems(View view) {
-        System.out.println("dsave");
         for (Item item: selectedItems) {
-            System.out.println("bla");
-            TriggeerItemJoin.saveTriggeer(getApplicationContext(), triggeerId, item.getItemId());
+            if (triggeerId != null && !triggeerId.isEmpty()) {
+                TriggeerItemJoin.saveTriggeer(getApplicationContext(), triggeerId, item.getItemId());
+            }
+
+            if (actiionId != null && !actiionId.isEmpty()) {
+                ActiionItemJoin.saveItems(getApplicationContext(), actiionId, item.getItemId());
+            }
         }
         super.onBackPressed();
     }
