@@ -28,9 +28,14 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
         if (step.timeTrigger != 0) {
             stepTrigger.setText("Temps de déclenchement : "+step.getTimeTrigger());
         } else {
-            //stepTrigger.setText("Déclencheur : "+step.getStepId());
+            stepTrigger.setText("Déclencheur : items");
         }
 
-        //stepAction.setText("Nombre d'action : "+step.getActions().size());
+        if (step.getActiions(context) != null) {
+            stepAction.setText("Nombre d'action : "+step.getActiions(context).size());
+        } else {
+            stepAction.setText("Nombre d'action : inconnu");
+        }
+
     }
 }

@@ -39,7 +39,7 @@ public class ActionListActivity extends AppCompatActivity {
 
         stepId = getIntent().getExtras().getString("stepId");
 
-        getData();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +75,8 @@ public class ActionListActivity extends AppCompatActivity {
                     }
                 })
         );
+
+        getData();
 
 
     }

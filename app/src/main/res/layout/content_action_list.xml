@@ -9,12 +9,4 @@
     tools:context=".views.ActionList.ActionListActivity"
     tools:showIn="@layout/activity_action_list">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/actiionRecycler"
-        android:layout_width="884dp"
-        android:layout_height="1127dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
