@@ -1,13 +1,12 @@
 package fr.maximelucquin.falconexperience.views;
 
-import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import fr.maximelucquin.falconexperience.R;
-import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+import fr.maximelucquin.falconexperience.views.ControlDevice.ControlDeviceActivity;
 import fr.maximelucquin.falconexperience.views.SequenceList.SequenceListActivity;
 
 public class MainActivity extends AppCompatActivity {

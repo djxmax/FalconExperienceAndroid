@@ -1,4 +1,4 @@
-package fr.maximelucquin.falconexperience.views;
+package fr.maximelucquin.falconexperience.views.ControlDevice;
 
 import fr.maximelucquin.falconexperience.R;
 import me.aflak.arduino.Arduino;

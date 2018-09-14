@@ -2,6 +2,7 @@ package fr.maximelucquin.falconexperience.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
@@ -27,6 +28,8 @@ public class Item {
     public ItemType type;
     @TypeConverters(ItemPutTypeConverter.class)
     public ItemPutType putType;
+    @Ignore
+    public boolean enabled;
 
     public enum ItemType {
         BUTTON(0),
@@ -115,6 +118,14 @@ public class Item {
 
     public void setPutType(ItemPutType putType) {
         this.putType = putType;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void save(Context context) {

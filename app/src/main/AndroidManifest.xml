@@ -36,13 +36,14 @@
             android:name=".views.ItemList.ItemsActivity"
             android:label="@string/title_activity_items"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".views.ControlDeviceActivity" />
+        <activity android:name=".views.ControlDevice.ControlDeviceActivity" />
         <activity android:name=".views.ItemDetails.ItemDetailsActivity" />
         <activity
             android:name=".views.ActionList.ActionListActivity"
             android:label="@string/title_activity_action_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".views.ActiionDetails.ActiionDetailsActivity"></activity>
+        <activity android:name=".views.ActiionDetails.ActiionDetailsActivity" />
+        <activity android:name=".views.SequencePlay.SequencePlayActivity"></activity>
     </application>
 
 </manifest>
