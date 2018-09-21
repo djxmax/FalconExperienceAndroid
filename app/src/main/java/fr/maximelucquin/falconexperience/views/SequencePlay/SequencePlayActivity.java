@@ -4,9 +4,15 @@ import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.data.Item;
 import fr.maximelucquin.falconexperience.data.Sequence;
 import fr.maximelucquin.falconexperience.data.Step;
+import fr.maximelucquin.falconexperience.data.Triggeer;
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+import fr.maximelucquin.falconexperience.views.Sequence.StepActivity;
 import fr.maximelucquin.falconexperience.views.Sequence.StepAdapter;
+import fr.maximelucquin.falconexperience.views.StepDetails.StepDetailsActivity;
+import fr.maximelucquin.falconexperience.views.Tools.RecyclerItemClickListener;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,17 +22,24 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static fr.maximelucquin.falconexperience.views.SequencePlay.SequencePlayActivity.PlayStatus.*;
 
+
 public class SequencePlayActivity extends AppCompatActivity {
+
+    public static int LOOP_WAIT = 1000;
 
     private Sequence sequence;
     private List<Step> steps;
     private List<Item> items;
+    private Map<String,Item> itemsMap;
+    private int currentStep;
     private PlayStatus playStatus;
-
+    private long lastStepTime;
     private StepAdapter stepAdapter;
     private SequencePlayItemAdapter itemAdapter;
 
@@ -57,6 +70,9 @@ public class SequencePlayActivity extends AppCompatActivity {
         steps = sequence.getSteps(getApplicationContext());
 
         items = AppDatabase.getAppDatabase(getApplicationContext()).itemDAO().getAllItems();
+        convertItemsToMap();
+
+        currentStep = -1;
 
         stepRecycler = (RecyclerView) findViewById(R.id.playSequenceRecycler);
         itemRecycler = (RecyclerView) findViewById(R.id.playItemRecycler);
@@ -69,13 +85,32 @@ public class SequencePlayActivity extends AppCompatActivity {
         stepRecycler.setLayoutManager(new LinearLayoutManager(this));
         itemRecycler.setLayoutManager(new GridLayoutManager(this, 6));
 
-        stepAdapter = new StepAdapter(steps, getApplicationContext());
+        stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
         stepRecycler.setAdapter(stepAdapter);
 
         itemAdapter = new SequencePlayItemAdapter(items, getApplicationContext());
         itemRecycler.setAdapter(itemAdapter);
 
         setPlayStatus(2);
+
+        itemRecycler.addOnItemTouchListener(
+                new RecyclerItemClickListener(getApplicationContext(), itemRecycler ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        if (items.get(position).isEnabled()) {
+                            items.get(position).setEnabled(false);
+                        } else {
+                            items.get(position).setEnabled(true);
+                        }
+                        itemAdapter = new SequencePlayItemAdapter(items, getApplicationContext());
+                        itemRecycler.setAdapter(itemAdapter);
+                        convertItemsToMap();
+                    }
+                })
+        );
 
     }
 
@@ -117,6 +152,10 @@ public class SequencePlayActivity extends AppCompatActivity {
                 stopButton.setAlpha(1f);
                 playStatus = PLAY;
                 statusView.setText("PLAY");
+                lastStepTime = System.currentTimeMillis();
+                if (currentStep == -1) {
+                    currentStep = 0;
+                }
                 launchPlayer();
                 break;
             case 1:
@@ -144,6 +183,7 @@ public class SequencePlayActivity extends AppCompatActivity {
                 stopButton.setAlpha(.3f);
                 playStatus = STOP;
                 statusView.setText("STOP");
+                currentStep = -1;
                 break;
             case 3:
                 //back
@@ -157,33 +197,62 @@ public class SequencePlayActivity extends AppCompatActivity {
                 stopButton.setAlpha(.3f);
                 playStatus = STOP;
                 statusView.setText("STOP");
+                currentStep = -1;
                 break;
             default:
                 break;
         }
+        stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
+        stepRecycler.setAdapter(stepAdapter);
     }
 
     public void launchPlayer() {
+        final Handler handler = new Handler();
         player = new Runnable() {
             //int count = 0;
 
             public void run() {
 
                 while (playStatus == PLAY) {
-                    /*if (mOnBPMListener != null)
-                        mOnBPMListener.onBPM(count);
-                    long millis = System.currentTimeMillis();
-                    for (int i = 0; i < rows; i++) {
-                        System.out.println("Row-COl " + i + "-" + count);
-                        if (matrix.getCellValue(i, count) != 0)
-                            sound.play(samples[i], 100, 100, 1, 0, 1);
-                    }*/
+                    if (steps == null) {
+                        handler.post(new Runnable() {
+                            public void run() {
+                                setPlayStatus(2);
+                            }
+                        });
+                        return;
+                    }
 
-                    //count = (count + 1) % beats;
-                    //long next = (60 * 1000) / bpm;
+                    if (currentStep >= steps.size()) {
+                        handler.post(new Runnable() {
+                            public void run() {
+                                setPlayStatus(2);
+                            }
+                        });
+                        return;
+                    }
+
+                    Step step = steps.get(currentStep);
+
+                    boolean triggerOk = checkTriggerOk(step);
+
+                    if (triggerOk) {
+                        //do things
+                        currentStep++;
+                        //stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
+                        //stepRecycler.setAdapter(stepAdapter);
+                    }
+
+                    handler.post(new Runnable() {
+                        public void run() {
+                            stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
+                            stepRecycler.setAdapter(stepAdapter);
+                        }
+                    });
+
+
                     try {
-                        //Thread.sleep(next - (System.currentTimeMillis() - millis));
-                        Thread.sleep(10);
+                        Thread.sleep(LOOP_WAIT);
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -195,5 +264,47 @@ public class SequencePlayActivity extends AppCompatActivity {
         //playing = true;
         Thread thandler = new Thread(player);
         thandler.start();
+    }
+
+    private boolean checkTriggerOk(Step step) {
+        Triggeer triggeer = step.getTriggeerWithoutReload(getApplicationContext());
+        if (step.timeTrigger != 0) {
+            if (lastStepTime <= System.currentTimeMillis()) {
+                return true;
+            }
+            return false;
+        } else if (triggeer != null) {
+            boolean allOff = true;
+            boolean allOn = true;
+            List<Item> theItems = triggeer.getItemsWithoutReload(getApplicationContext());
+            if (theItems == null) {
+                return false;
+            }
+            for (Item thisItem: theItems) {
+
+                Item item = itemsMap.get(thisItem.getItemId());
+                System.out.println(item.getName()+" "+item.isEnabled());
+                if (item.isEnabled()) {
+                    allOff = false;
+                } else {
+                    allOn = false;
+                }
+            }
+
+            if (triggeer.getType() != null && triggeer.getType() == Triggeer.TriggeerType.SWITCH_OFF) {
+                return allOff;
+            } else if (triggeer.getType() != null && triggeer.getType() == Triggeer.TriggeerType.SWITCH_ON){
+                return allOn;
+            }
+        }
+
+        return false;
+    }
+
+    private void convertItemsToMap() {
+        if (itemsMap == null) {
+            itemsMap = new HashMap<String,Item>();
+        }
+        for (Item i : items) itemsMap.put(i.getItemId(),i);
     }
 }

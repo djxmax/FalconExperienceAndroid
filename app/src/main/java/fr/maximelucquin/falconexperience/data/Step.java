@@ -79,6 +79,19 @@ public class Step implements Comparable<Step> {
         return triggeer;
     }
 
+    public Triggeer getTriggeerWithoutReload(Context context) {
+        if (triggeer == null) {
+            List<Triggeer> triggeers = AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeersForStep(getStepId());
+            if (triggeers != null) {
+                if (triggeers.size() > 0) {
+                    triggeer = AppDatabase.getAppDatabase(context).triggeerDAO().getTriggeersForStep(getStepId()).get(0);
+                }
+            }
+        }
+
+        return triggeer;
+    }
+
     public void setTrigger(Triggeer trigger) {
         this.triggeer = trigger;
     }

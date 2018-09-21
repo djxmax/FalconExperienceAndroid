@@ -77,6 +77,13 @@ public class Triggeer {
         return items;
     }
 
+    public List<Item> getItemsWithoutReload(Context context) {
+        if (items == null) {
+            items = AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().getItemForTriggeer(getTriggeerId());
+        }
+        return items;
+    }
+
     public void setItems(List<Item> items) {
         this.items = items;
     }

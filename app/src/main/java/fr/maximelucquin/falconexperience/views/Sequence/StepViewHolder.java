@@ -3,6 +3,7 @@ package fr.maximelucquin.falconexperience.views.Sequence;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import fr.maximelucquin.falconexperience.R;
@@ -13,6 +14,7 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
     private TextView stepOrder;
     private TextView stepTrigger;
     private TextView stepAction;
+    private LinearLayout stepBackground;
 
     public StepViewHolder(View itemView) {
         super(itemView);
@@ -20,9 +22,10 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
         stepOrder = (TextView) itemView.findViewById(R.id.step_order);
         stepTrigger = (TextView) itemView.findViewById(R.id.step_trigger);
         stepAction = (TextView) itemView.findViewById(R.id.step_action);
+        stepBackground = (LinearLayout) itemView.findViewById(R.id.step_background);
     }
 
-    public void bind(Step step, Context context, int position){
+    public void bind(Step step, Context context, int position, int currentStep){
         int order = step.getOrder() + 1;
         stepOrder.setText(""+order);
         if (step.timeTrigger != 0) {
@@ -35,6 +38,12 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
             stepAction.setText("Nombre d'action : "+step.getActiions(context).size());
         } else {
             stepAction.setText("Nombre d'action : inconnu");
+        }
+
+        if (currentStep != -1 && currentStep == position) {
+            stepBackground.setBackgroundResource(R.color.colorAccent);
+        } else {
+            stepBackground.setBackgroundResource(R.color.backgroundClear);
         }
 
     }

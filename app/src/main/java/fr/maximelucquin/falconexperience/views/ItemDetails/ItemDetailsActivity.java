@@ -221,6 +221,94 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
 
     public void autoGenerate(View view) {
+        for (int i = 1; i<19; i++) {
+            Item item = new Item();
+            item.setName("B"+i);
+            item.setType(BUTTON);
+            item.setPutType(Item.ItemPutType.INPUT);
+            item.save(getApplicationContext());
+        }
+
+        for (int i=1; i< 10; i++) {
+            Item item = new Item();
+            item.setName("L"+i);
+            item.setType(LED);
+            item.setPutType(Item.ItemPutType.OUTPUT);
+            item.save(getApplicationContext());
+        }
+
+        Item ledtrip = new Item();
+        ledtrip.setName("BL");
+        ledtrip.setType(LEDSTRIP);
+        ledtrip.setPutType(Item.ItemPutType.OUTPUT);
+        ledtrip.save(getApplicationContext());
+
+        Item vr = new Item();
+        vr.setName("VR");
+        vr.setType(ROUNDLED);
+        vr.setPutType(Item.ItemPutType.OUTPUT);
+        vr.save(getApplicationContext());
+
+        Item vc = new Item();
+        vc.setName("VC");
+        vc.setType(SQUARELED);
+        vc.setPutType(Item.ItemPutType.OUTPUT);
+        vc.save(getApplicationContext());
+
+        Item ph = new Item();
+        ph.setName("PH");
+        ph.setType(OTHER);
+        ph.setPutType(Item.ItemPutType.OUTPUT);
+        ph.save(getApplicationContext());
+
+        for (int i=1; i< 12; i++) {
+            Item item = new Item();
+            item.setName("V"+i);
+            item.setType(VIDEO);
+            item.setPutType(Item.ItemPutType.OUTPUT);
+            item.save(getApplicationContext());
+        }
+
+        Item m = new Item();
+        m.setName("M1");
+        m.setType(MUSIC);
+        m.setPutType(Item.ItemPutType.OUTPUT);
+        m.save(getApplicationContext());
+
+        for (int i=1; i< 5; i++) {
+            Item item = new Item();
+            item.setName("A"+i);
+            item.setType(ALARM);
+            item.setPutType(Item.ItemPutType.OUTPUT);
+            item.save(getApplicationContext());
+        }
+
+        for (int i=1; i< 9; i++) {
+            Item item = new Item();
+            item.setName("S"+i);
+            item.setType(SOUND);
+            item.setPutType(Item.ItemPutType.OUTPUT);
+            item.save(getApplicationContext());
+        }
+
+        Item p = new Item();
+        p.setName("P");
+        p.setType(OTHER);
+        p.setPutType(Item.ItemPutType.OUTPUT);
+        p.save(getApplicationContext());
+
+        Item mf = new Item();
+        mf.setName("MF");
+        mf.setType(OTHER);
+        mf.setPutType(Item.ItemPutType.OUTPUT);
+        mf.save(getApplicationContext());
+
+        Item c = new Item();
+        c.setName("C");
+        c.setType(OTHER);
+        c.setPutType(Item.ItemPutType.OUTPUT);
+        c.save(getApplicationContext());
+
         super.onBackPressed();
     }
 }

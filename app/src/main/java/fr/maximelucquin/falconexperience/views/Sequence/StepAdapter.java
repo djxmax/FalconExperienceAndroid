@@ -15,10 +15,18 @@ public class StepAdapter extends RecyclerView.Adapter<StepViewHolder> {
 
     List<Step> list;
     Context context;
+    int currentStep;
 
     public StepAdapter(List<Step> list, Context context) {
         this.list = list;
         this.context = context;
+        this.currentStep = -1;
+    }
+
+    public StepAdapter(List<Step> list, Context context, int currentStep) {
+        this.list = list;
+        this.context = context;
+        this.currentStep = currentStep;
     }
 
     //cette fonction permet de créer les viewHolder
@@ -33,7 +41,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepViewHolder> {
     @Override
     public void onBindViewHolder(StepViewHolder stepViewHolder, int position) {
         Step step = list.get(position);
-        stepViewHolder.bind(step, context, position);
+        stepViewHolder.bind(step, context, position, currentStep);
     }
 
     @Override

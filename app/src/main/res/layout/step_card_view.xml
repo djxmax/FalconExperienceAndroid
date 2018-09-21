@@ -20,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/backgroundClear"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/step_background">
 
         <!-- Les CardView agissent comme des FrameLayout,
          pour avoir une organisation verticale nous devons
