@@ -33,7 +33,8 @@ public class StepDetailsActivity extends AppCompatActivity {
         String stepId = getIntent().getExtras().getString("stepId");
         step = AppDatabase.getAppDatabase(getApplicationContext()).stepDAO().getStep(stepId);
 
-        order.setText("Numéro d'étape : "+step.getOrder());
+        int theOrder = step.getOrder() + 1;
+        order.setText("Numéro d'étape : "+theOrder);
         timeTrigger.setText(""+step.getTimeTrigger(), TextView.BufferType.EDITABLE);
 
 
@@ -70,6 +71,9 @@ public class StepDetailsActivity extends AppCompatActivity {
     }
 
     public void saveStep(View view) {
+        if (timeTrigger.getText().toString() != "0") {
+            step.setTimeTrigger(Integer.parseInt(timeTrigger.getText().toString()));
+        }
         step.save(getApplicationContext());
         super.onBackPressed();
     }

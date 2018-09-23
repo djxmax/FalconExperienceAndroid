@@ -19,7 +19,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity(tableName = "triggeer",foreignKeys = @ForeignKey(entity = Step.class,
         parentColumns = "id",
         childColumns = "stepId",
-        onDelete = CASCADE))
+        onDelete = ForeignKey.CASCADE))
 public class Triggeer {
     @NonNull
     @PrimaryKey

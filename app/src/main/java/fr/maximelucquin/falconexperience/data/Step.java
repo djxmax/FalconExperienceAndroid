@@ -17,7 +17,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity(foreignKeys = @ForeignKey(entity = Sequence.class,
         parentColumns = "id",
         childColumns = "sequenceId",
-        onDelete = CASCADE))
+        onDelete = ForeignKey.CASCADE))
 public class Step implements Comparable<Step> {
     @NonNull
     @PrimaryKey

@@ -19,7 +19,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity(foreignKeys = @ForeignKey(entity = Step.class,
         parentColumns = "id",
         childColumns = "stepId",
-        onDelete = CASCADE))
+        onDelete = ForeignKey.CASCADE))
 public class Actiion {
     @NonNull
     @PrimaryKey

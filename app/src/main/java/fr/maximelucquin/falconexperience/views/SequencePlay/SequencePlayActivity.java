@@ -72,6 +72,7 @@ public class SequencePlayActivity extends AppCompatActivity {
         items = AppDatabase.getAppDatabase(getApplicationContext()).itemDAO().getAllItems();
         convertItemsToMap();
 
+        lastStepTime = System.currentTimeMillis();
         currentStep = -1;
 
         stepRecycler = (RecyclerView) findViewById(R.id.playSequenceRecycler);
@@ -239,6 +240,7 @@ public class SequencePlayActivity extends AppCompatActivity {
                     if (triggerOk) {
                         //do things
                         currentStep++;
+                        lastStepTime = System.currentTimeMillis();
                         //stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
                         //stepRecycler.setAdapter(stepAdapter);
                     }
@@ -269,7 +271,7 @@ public class SequencePlayActivity extends AppCompatActivity {
     private boolean checkTriggerOk(Step step) {
         Triggeer triggeer = step.getTriggeerWithoutReload(getApplicationContext());
         if (step.timeTrigger != 0) {
-            if (lastStepTime <= System.currentTimeMillis()) {
+            if (lastStepTime + step.timeTrigger <= System.currentTimeMillis()) {
                 return true;
             }
             return false;
@@ -283,7 +285,7 @@ public class SequencePlayActivity extends AppCompatActivity {
             for (Item thisItem: theItems) {
 
                 Item item = itemsMap.get(thisItem.getItemId());
-                System.out.println(item.getName()+" "+item.isEnabled());
+
                 if (item.isEnabled()) {
                     allOff = false;
                 } else {
