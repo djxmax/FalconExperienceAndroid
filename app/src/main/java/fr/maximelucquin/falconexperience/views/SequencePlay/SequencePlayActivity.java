@@ -1,6 +1,7 @@
 package fr.maximelucquin.falconexperience.views.SequencePlay;
 
 import fr.maximelucquin.falconexperience.R;
+import fr.maximelucquin.falconexperience.data.Actiion;
 import fr.maximelucquin.falconexperience.data.Item;
 import fr.maximelucquin.falconexperience.data.Sequence;
 import fr.maximelucquin.falconexperience.data.Step;
@@ -238,7 +239,7 @@ public class SequencePlayActivity extends AppCompatActivity {
                     boolean triggerOk = checkTriggerOk(step);
 
                     if (triggerOk) {
-                        //do things
+                        doActions(step);
                         currentStep++;
                         lastStepTime = System.currentTimeMillis();
                         //stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
@@ -301,6 +302,18 @@ public class SequencePlayActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void doActions(Step step) {
+        List<Actiion> actions = step.getActiions(getApplicationContext());
+        if (actions == null) {
+            return;
+        }
+
+        for (Actiion action: actions) {
+            
+        }
+
     }
 
     private void convertItemsToMap() {
