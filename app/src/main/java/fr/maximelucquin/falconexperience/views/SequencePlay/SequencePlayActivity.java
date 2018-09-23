@@ -23,10 +23,12 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.maximelucquin.falconexperience.data.Actiion.ActiionType.ON;
 import static fr.maximelucquin.falconexperience.views.SequencePlay.SequencePlayActivity.PlayStatus.*;
 
 
@@ -38,11 +40,15 @@ public class SequencePlayActivity extends AppCompatActivity {
     private List<Step> steps;
     private List<Item> items;
     private Map<String,Item> itemsMap;
+    private Map<Long, Actiion> taskDelayTodo;
+    private Map<Long, Actiion> taskDurationTodo;
     private int currentStep;
     private PlayStatus playStatus;
     private long lastStepTime;
     private StepAdapter stepAdapter;
     private SequencePlayItemAdapter itemAdapter;
+
+    private List<String> dataToSend;
 
 
     private Runnable player;
@@ -75,6 +81,10 @@ public class SequencePlayActivity extends AppCompatActivity {
 
         lastStepTime = System.currentTimeMillis();
         currentStep = -1;
+
+        dataToSend = new ArrayList<>();
+        taskDelayTodo = new HashMap<Long, Actiion>();
+        taskDurationTodo = new HashMap<Long, Actiion>();
 
         stepRecycler = (RecyclerView) findViewById(R.id.playSequenceRecycler);
         itemRecycler = (RecyclerView) findViewById(R.id.playItemRecycler);
@@ -253,6 +263,10 @@ public class SequencePlayActivity extends AppCompatActivity {
                         }
                     });
 
+                    checkTaskTodo();
+
+                    sendData();
+
 
                     try {
                         Thread.sleep(LOOP_WAIT);
@@ -311,8 +325,11 @@ public class SequencePlayActivity extends AppCompatActivity {
         }
 
         for (Actiion action: actions) {
-            
+            generateStringToSend(action);
+
         }
+
+
 
     }
 
@@ -322,4 +339,55 @@ public class SequencePlayActivity extends AppCompatActivity {
         }
         for (Item i : items) itemsMap.put(i.getItemId(),i);
     }
+
+    private void generateStringToSend(Actiion action) {
+        List<Item> items = action.getItems(getApplicationContext());
+        if(items == null) {
+            return;
+        }
+
+        if (action.delay != 0) {
+            for (Item item : items) {
+                String str = "#" + item.getName();
+                if (action.getType() == ON) {
+                    str = str + "-ON";
+                } else {
+                    str = str + "-OF";
+                }
+
+                if (action.getBlinkFreq() != 0) {
+                    str = str + action.getBlinkFreq();
+                }
+
+                dataToSend.add(str);
+            }
+
+            if (action.getDuration() != 0) {
+                taskDurationTodo.put(System.currentTimeMillis(), action);
+            }
+        } else {
+            taskDelayTodo.put(System.currentTimeMillis(), action);
+        }
+    }
+
+    private void checkTaskTodo() {
+        //todo
+    }
+
+    private void sendData() {
+        String strTosend = "";
+        for (String str: dataToSend) {
+            strTosend = strTosend + str + " ";
+        }
+
+        if (!strTosend.isEmpty()) {
+            //todo send data
+            dataToSend.clear();
+        }
+
+    }
+
+
+
+
 }
