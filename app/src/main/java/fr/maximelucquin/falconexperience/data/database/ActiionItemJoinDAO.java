@@ -19,6 +19,9 @@ public interface ActiionItemJoinDAO {
     @Delete
     void delete(ActiionItemJoin actiionItemJoin);
 
+    @Query("DELETE FROM actiion_item_join WHERE actiionId=:actiionId")
+    void deleteJoinForAction(String actiionId);
+
     @Query("SELECT * FROM actiion INNER JOIN actiion_item_join ON actiion.id=actiion_item_join.actiionId WHERE actiion_item_join.itemId=:itemId")
     List<Actiion> getActiionForItem(final String itemId);
 

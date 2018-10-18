@@ -68,7 +68,18 @@ public class ItemsActivity extends AppCompatActivity {
 
                         Item item = items.get(position);
                         if (Item.containsItem(selectedItems,item.getItemId())) {
-                            selectedItems.remove(item);
+                            //selectedItems.remove(item);
+                            int index = -1;
+                            for(int i = 0; i < selectedItems.size(); i++) {
+                                if (selectedItems.get(i).getItemId().equals(item.getItemId())) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (index != -1) {
+                                selectedItems.remove(index);
+                            }
+
                         } else {
                             selectedItems.add(item);
                         }
@@ -132,6 +143,14 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     public void saveItems(View view) {
+        if (triggeerId != null && !triggeerId.isEmpty()) {
+            TriggeerItemJoin.deleteAllItems(getApplicationContext(),triggeerId);
+        }
+
+        if (actiionId != null && !actiionId.isEmpty()) {
+            ActiionItemJoin.deleteAllItems(getApplicationContext(), actiionId);
+        }
+
         for (Item item: selectedItems) {
             if (triggeerId != null && !triggeerId.isEmpty()) {
                 TriggeerItemJoin.saveTriggeer(getApplicationContext(), triggeerId, item.getItemId());

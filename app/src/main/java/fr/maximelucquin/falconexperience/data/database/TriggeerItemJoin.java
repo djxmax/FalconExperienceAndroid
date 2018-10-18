@@ -49,4 +49,8 @@ public class TriggeerItemJoin {
     public static void saveTriggeer(Context context, String triggerId, String itemId) {
         AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().insert(new TriggeerItemJoin(triggerId, itemId));
     }
+
+    public static void deleteAllItems(Context context, String triggeerId) {
+        AppDatabase.getAppDatabase(context).triggeerItemJoinDAO().deleteJoinForTriggeer(triggeerId);
+    }
 }

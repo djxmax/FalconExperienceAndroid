@@ -11,8 +11,12 @@ import fr.maximelucquin.falconexperience.views.Sequence.StepActivity;
 import fr.maximelucquin.falconexperience.views.Sequence.StepAdapter;
 import fr.maximelucquin.falconexperience.views.StepDetails.StepDetailsActivity;
 import fr.maximelucquin.falconexperience.views.Tools.RecyclerItemClickListener;
+import me.aflak.arduino.Arduino;
+import me.aflak.arduino.ArduinoListener;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.hardware.usb.UsbDevice;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +37,11 @@ import static fr.maximelucquin.falconexperience.data.Actiion.ActiionType.ON;
 import static fr.maximelucquin.falconexperience.views.SequencePlay.SequencePlayActivity.PlayStatus.*;
 
 
-public class SequencePlayActivity extends AppCompatActivity {
+public class SequencePlayActivity extends AppCompatActivity implements ArduinoListener {
 
     public static int LOOP_WAIT = 1000;
+
+    private Arduino arduino;
 
     private Sequence sequence;
     private List<Step> steps;
@@ -56,6 +63,7 @@ public class SequencePlayActivity extends AppCompatActivity {
     private RecyclerView stepRecycler;
     private RecyclerView itemRecycler;
     private TextView statusView;
+    private TextView arduinoStatus;
     private ImageButton playBackButton;
     private ImageButton playButton;
     private ImageButton pauseButton;
@@ -71,6 +79,9 @@ public class SequencePlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sequence_play);
+
+        arduino = new Arduino(this);
+        arduino.addVendorId(6790);
 
         String sequenceId = getIntent().getExtras().getString("sequenceId");
         sequence = AppDatabase.getAppDatabase(getApplicationContext()).sequenceDAO().getSequence(sequenceId);
@@ -89,6 +100,7 @@ public class SequencePlayActivity extends AppCompatActivity {
         stepRecycler = (RecyclerView) findViewById(R.id.playSequenceRecycler);
         itemRecycler = (RecyclerView) findViewById(R.id.playItemRecycler);
         statusView = (TextView) findViewById(R.id.playStatus);
+        arduinoStatus = (TextView) findViewById(R.id.arduinoState);
         playBackButton = (ImageButton) findViewById(R.id.playBack);
         playButton = (ImageButton) findViewById(R.id.playButton);
         pauseButton = (ImageButton) findViewById(R.id.pauseButton);
@@ -329,8 +341,6 @@ public class SequencePlayActivity extends AppCompatActivity {
 
         }
 
-
-
     }
 
     private void convertItemsToMap() {
@@ -347,20 +357,7 @@ public class SequencePlayActivity extends AppCompatActivity {
         }
 
         if (action.delay != 0) {
-            for (Item item : items) {
-                String str = "#" + item.getName();
-                if (action.getType() == ON) {
-                    str = str + "-ON";
-                } else {
-                    str = str + "-OF";
-                }
-
-                if (action.getBlinkFreq() != 0) {
-                    str = str + action.getBlinkFreq();
-                }
-
-                dataToSend.add(str);
-            }
+            dataToSend.addAll(actionStringGenerator(items,action, false));
 
             if (action.getDuration() != 0) {
                 taskDurationTodo.put(System.currentTimeMillis(), action);
@@ -370,8 +367,63 @@ public class SequencePlayActivity extends AppCompatActivity {
         }
     }
 
+    private List<String> actionStringGenerator(List<Item> items, Actiion action, boolean inv) {
+        List <String> data = new ArrayList<>();
+        for (Item item : items) {
+            if (!inv) {
+                String str = "#" + item.getName();
+                if (action.getType() == ON) {
+                    str = str + "-ON";
+                } else {
+                    str = str + "-OF";
+                }
+
+                if (action.getBlinkFreq() != 0) {
+                    str = str + "$" + action.getBlinkFreq();
+                }
+
+                data.add(str);
+            } else {
+                String str = "#" + item.getName();
+                if (action.getType() == ON) {
+                    str = str + "-OF";
+                } else {
+                    str = str + "-ON";
+                }
+
+                data.add(str);
+            }
+
+        }
+        return data;
+    }
+
     private void checkTaskTodo() {
-        //todo
+        Actiion actionToDelete = null;
+        for (Map.Entry<Long, Actiion> entry : taskDelayTodo.entrySet()) {
+            Long time = entry.getKey();
+            Actiion action = entry.getValue();
+            if (action.getDelay()+time > System.currentTimeMillis()) {
+                dataToSend.addAll(actionStringGenerator(action.getItems(getApplicationContext()),action, false));
+                actionToDelete = action;
+            }
+        }
+        if (actionToDelete != null) {
+            taskDelayTodo.remove(actionToDelete);
+        }
+        actionToDelete = null;
+
+        for (Map.Entry<Long, Actiion> entry : taskDurationTodo.entrySet()) {
+            Long time = entry.getKey();
+            Actiion action = entry.getValue();
+            if (action.getDuration()+time > System.currentTimeMillis()) {
+                dataToSend.addAll(actionStringGenerator(action.getItems(getApplicationContext()),action, true));
+                actionToDelete = action;
+            }
+        }
+        if (actionToDelete != null) {
+            taskDurationTodo.remove(actionToDelete);
+        }
     }
 
     private void sendData() {
@@ -380,14 +432,107 @@ public class SequencePlayActivity extends AppCompatActivity {
             strTosend = strTosend + str + " ";
         }
 
-        if (!strTosend.isEmpty()) {
-            //todo send data
+        if (!strTosend.isEmpty() && arduino.isOpened()) {
+            arduino.send(strTosend.getBytes());
             dataToSend.clear();
         }
 
     }
 
+    private void decodeData(String data) {
+        System.out.println(data);
+        String[] separated = data.split("#");
+        for (int i = 0; i < separated.length;i++) {
+            String str = separated[i];
+            String value = str.trim();
+            String[] values = value.split("-");
+            if (values.length != 2) {
+                continue;
+            }
 
+            String item = values[0];
+            String actionFreq = values[1];
+            String action = "";
+            String freq = "";
+            String[] values2 = actionFreq.split("$");
+            if (values2.length == 1) {
+                action = values2[0];
+            } else if (values2.length == 2){
+                action = values2[0];
+                freq = values2[1];
+            }
+            //System.out.println("item : "+item+" action : "+action+" freq : "+freq);
+
+            for (int j = 0; j < items.size(); j++) {
+                if (items.get(j).name == item) {
+                    if (action == "ON") {
+                        items.get(j).enabled = true;
+                    } else {
+                        items.get(j).enabled = false;
+                    }
+                }
+            }
+        }
+
+        itemAdapter = new SequencePlayItemAdapter(items, getApplicationContext());
+        itemRecycler.setAdapter(itemAdapter);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        arduino.setArduinoListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        arduino.unsetArduinoListener();
+        arduino.close();
+    }
+
+    @Override
+    public void onArduinoAttached(UsbDevice device) {
+        arduino.open(device);
+        arduinoStatus.setTextColor(Color.GREEN);
+    }
+
+    @Override
+    public void onArduinoDetached() {
+        // arduino detached from phone
+        arduinoStatus.setTextColor(Color.RED);
+    }
+
+    @Override
+    public void onArduinoMessage(byte[] bytes) {
+        final String message = new String(bytes);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //arTextRecive.setText(arTextRecive.getText() + "\n" + message);
+                decodeData(message);
+            }});
+        // new message received from arduino
+    }
+
+    @Override
+    public void onArduinoOpened() {
+        // you can start the communication
+
+    }
+
+    @Override
+    public void onUsbPermissionDenied() {
+        // Permission denied, display popup then
+        //arInfo.setText("USB permission denied, retrying in 3 sec");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                arduino.reopen();
+            }
+        }, 3000);
+    }
 
 
 }

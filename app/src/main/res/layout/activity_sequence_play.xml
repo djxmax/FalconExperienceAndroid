@@ -95,4 +95,15 @@
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/arduinoState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:text="Arduino"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

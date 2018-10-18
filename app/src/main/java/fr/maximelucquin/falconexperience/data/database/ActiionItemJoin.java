@@ -49,4 +49,8 @@ public class ActiionItemJoin {
     public static void saveItems(Context context, String actionId, String itemId) {
         AppDatabase.getAppDatabase(context).actiionItemJoinDAO().insert(new ActiionItemJoin(actionId, itemId));
     }
+
+    public static void deleteAllItems(Context context, String actionId) {
+        AppDatabase.getAppDatabase(context).actiionItemJoinDAO().deleteJoinForAction(actionId);
+    }
 }

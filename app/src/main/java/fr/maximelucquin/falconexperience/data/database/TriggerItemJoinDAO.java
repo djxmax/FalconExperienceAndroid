@@ -1,6 +1,7 @@
 package fr.maximelucquin.falconexperience.data.database;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -14,6 +15,12 @@ public interface TriggerItemJoinDAO {
 
     @Insert
     void insert(TriggeerItemJoin triggerItemJoin);
+
+    @Delete
+    void delete(TriggeerItemJoin triggerItemJoin);
+
+    @Query("DELETE FROM triggeer_item_join WHERE triggeerId=:triggeerId")
+    void deleteJoinForTriggeer(String triggeerId);
 
     @Query("SELECT triggeer.* FROM triggeer INNER JOIN triggeer_item_join ON triggeer.id=triggeer_item_join.triggeerId WHERE triggeer_item_join.itemId=:itemId")
     List<Triggeer> getTriggerForItem(final String itemId);
