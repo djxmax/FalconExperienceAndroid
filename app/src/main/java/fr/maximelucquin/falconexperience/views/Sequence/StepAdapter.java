@@ -13,9 +13,19 @@ import fr.maximelucquin.falconexperience.data.Step;
 
 public class StepAdapter extends RecyclerView.Adapter<StepViewHolder> {
 
+
+
     List<Step> list;
     Context context;
     int currentStep;
+
+    public void setList(List<Step> list) {
+        this.list = list;
+    }
+
+    public void setCurrentStep(int currentStep) {
+        this.currentStep = currentStep;
+    }
 
     public StepAdapter(List<Step> list, Context context) {
         this.list = list;

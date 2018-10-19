@@ -39,7 +39,7 @@ import static fr.maximelucquin.falconexperience.views.SequencePlay.SequencePlayA
 
 public class SequencePlayActivity extends AppCompatActivity implements ArduinoListener {
 
-    public static int LOOP_WAIT = 1000;
+    public static int LOOP_WAIT = 200;
 
     private Arduino arduino;
 
@@ -129,8 +129,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
                         } else {
                             items.get(position).setEnabled(true);
                         }
-                        itemAdapter = new SequencePlayItemAdapter(items, getApplicationContext());
-                        itemRecycler.setAdapter(itemAdapter);
+                        updateItemsRecycler();
                         convertItemsToMap();
                     }
                 })
@@ -226,8 +225,26 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
             default:
                 break;
         }
-        stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
-        stepRecycler.setAdapter(stepAdapter);
+        updateStepsRecycler();
+    }
+
+    public void updateStepsRecycler() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                stepAdapter.setCurrentStep(currentStep);
+                stepRecycler.getAdapter().notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void updateItemsRecycler() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                itemRecycler.getAdapter().notifyDataSetChanged();
+            }
+        });
     }
 
     public void launchPlayer() {
@@ -268,12 +285,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
                         //stepRecycler.setAdapter(stepAdapter);
                     }
 
-                    handler.post(new Runnable() {
-                        public void run() {
-                            stepAdapter = new StepAdapter(steps, getApplicationContext(), currentStep);
-                            stepRecycler.setAdapter(stepAdapter);
-                        }
-                    });
+                    updateStepsRecycler();
 
                     checkTaskTodo();
 
@@ -356,7 +368,8 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
             return;
         }
 
-        if (action.delay != 0) {
+        //System.out.println(action.delay);
+        if (action.delay == 0) {
             dataToSend.addAll(actionStringGenerator(items,action, false));
 
             if (action.getDuration() != 0) {
@@ -427,16 +440,18 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
     }
 
     private void sendData() {
+        //System.out.println("Coucou");
         String strTosend = "";
         for (String str: dataToSend) {
             strTosend = strTosend + str + " ";
         }
+        System.out.println("SEND : "+strTosend);
 
         if (!strTosend.isEmpty() && arduino.isOpened()) {
             arduino.send(strTosend.getBytes());
             dataToSend.clear();
         }
-
+        dataToSend.clear();
     }
 
     private void decodeData(String data) {
@@ -464,8 +479,8 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
             //System.out.println("item : "+item+" action : "+action+" freq : "+freq);
 
             for (int j = 0; j < items.size(); j++) {
-                if (items.get(j).name == item) {
-                    if (action == "ON") {
+                if (items.get(j).getName().equals(item)) {
+                    if (action.equals("ON")) {
                         items.get(j).enabled = true;
                     } else {
                         items.get(j).enabled = false;
@@ -474,8 +489,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
             }
         }
 
-        itemAdapter = new SequencePlayItemAdapter(items, getApplicationContext());
-        itemRecycler.setAdapter(itemAdapter);
+        updateItemsRecycler();
     }
 
 
