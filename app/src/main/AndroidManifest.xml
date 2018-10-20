@@ -43,7 +43,9 @@
             android:label="@string/title_activity_action_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".views.ActiionDetails.ActiionDetailsActivity" />
-        <activity android:name=".views.SequencePlay.SequencePlayActivity"></activity>
+        <activity android:name=".views.SequencePlay.SequencePlayActivity" />
+        <activity android:name=".views.MediaLoader.MediaListActivity" />
+        <activity android:name=".views.MediaLoader.MediaItemActivity"></activity>
     </application>
 
 </manifest>
