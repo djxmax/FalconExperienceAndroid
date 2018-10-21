@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.maximelucquin.falconexperience.data.database.AppDatabase;
+import fr.maximelucquin.falconexperience.data.database.ItemOutputConverter;
 import fr.maximelucquin.falconexperience.data.database.ItemPutTypeConverter;
 import fr.maximelucquin.falconexperience.data.database.ItemTypeConverter;
 
@@ -28,6 +29,8 @@ public class Item {
     public ItemType type;
     @TypeConverters(ItemPutTypeConverter.class)
     public ItemPutType putType;
+    @TypeConverters(ItemOutputConverter.class)
+    public ItemOutput output;
     @Ignore
     public boolean enabled;
 
@@ -61,6 +64,21 @@ public class Item {
         private int code;
 
         ItemPutType(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
+    public enum ItemOutput {
+        INTERNAL(0),
+        EXTERNAL(1);
+
+        private int code;
+
+        ItemOutput(int code) {
             this.code = code;
         }
 
@@ -126,6 +144,14 @@ public class Item {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public ItemOutput getOutput() {
+        return output;
+    }
+
+    public void setOutput(ItemOutput output) {
+        this.output = output;
     }
 
     public void save(Context context) {

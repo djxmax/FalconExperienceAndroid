@@ -4,4 +4,8 @@
     <string name="title_activity_sequence">SequenceActivity</string>
     <string name="title_activity_items">ItemsActivity</string>
     <string name="title_activity_action_list">ActionList</string>
+
+    <string name="title_activity_player">PlayerActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

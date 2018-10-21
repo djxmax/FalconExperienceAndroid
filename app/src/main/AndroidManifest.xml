@@ -45,7 +45,12 @@
         <activity android:name=".views.ActiionDetails.ActiionDetailsActivity" />
         <activity android:name=".views.SequencePlay.SequencePlayActivity" />
         <activity android:name=".views.MediaLoader.MediaListActivity" />
-        <activity android:name=".views.MediaLoader.MediaItemActivity"></activity>
+        <activity android:name=".views.MediaLoader.MediaItemActivity" />
+        <activity
+            android:name=".views.Player.PlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_player"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>
