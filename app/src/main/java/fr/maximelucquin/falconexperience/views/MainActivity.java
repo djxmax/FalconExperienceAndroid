@@ -8,6 +8,7 @@ import android.view.View;
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.views.ControlDevice.ControlDeviceActivity;
 import fr.maximelucquin.falconexperience.views.MediaLoader.MediaListActivity;
+import fr.maximelucquin.falconexperience.views.Player.PlayerActivity;
 import fr.maximelucquin.falconexperience.views.SequenceList.SequenceListActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void openMediaListActivity(View view) {
         Intent intent = new Intent(MainActivity.this, MediaListActivity.class);
+        startActivity(intent);
+    }
+
+    public void openPlayerActivity(View view) {
+        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
         startActivity(intent);
     }
 }

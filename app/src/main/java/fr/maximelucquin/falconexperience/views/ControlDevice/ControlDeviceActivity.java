@@ -1,9 +1,15 @@
 package fr.maximelucquin.falconexperience.views.ControlDevice;
 
 import fr.maximelucquin.falconexperience.R;
+import fr.maximelucquin.falconexperience.views.MainActivity;
+import fr.maximelucquin.falconexperience.views.Player.PlayerActivity;
 import me.aflak.arduino.Arduino;
 import me.aflak.arduino.ArduinoListener;
 
+import android.app.FragmentManager;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.usb.UsbDevice;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +20,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothClassicService;
+import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothConfiguration;
+import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothService;
+
+import java.util.UUID;
+
 public class ControlDeviceActivity extends AppCompatActivity implements ArduinoListener {
 
     Arduino arduino;
@@ -22,6 +34,10 @@ public class ControlDeviceActivity extends AppCompatActivity implements ArduinoL
     private EditText arTextSend;
     private ImageButton arButtonSend;
     private EditText arTextRecive;
+    private TextView blueInfo;
+
+    private BluetoothConfiguration config;
+    private BluetoothService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +45,26 @@ public class ControlDeviceActivity extends AppCompatActivity implements ArduinoL
         setContentView(R.layout.activity_control_device);
 
         arInfo = (TextView) findViewById(R.id.controlArInfo);
+        blueInfo = (TextView) findViewById(R.id.controlBlueInfo);
         arTextSend = (EditText) findViewById(R.id.controlArSendText);
         arButtonSend = (ImageButton) findViewById(R.id.controlArSendButton);
         arTextRecive = (EditText) findViewById(R.id.controlArReceiveText);
 
         arduino = new Arduino(this);
         arduino.addVendorId(6790);
+
+        config = new BluetoothConfiguration();
+        config.context = getApplicationContext();
+        config.bluetoothServiceClass = BluetoothClassicService.class; // BluetoothClassicService.class or BluetoothLeService.class
+        config.bufferSize = 1024;
+        config.characterDelimiter = '\n';
+        config.deviceName = "TFE";
+        config.callListenersInMainThread = true;
+        config.uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+
+        BluetoothService.init(config);
+        service = BluetoothService.getDefaultInstance();
+
     }
 
 
@@ -54,13 +84,13 @@ public class ControlDeviceActivity extends AppCompatActivity implements ArduinoL
     @Override
     public void onArduinoAttached(UsbDevice device) {
         arduino.open(device);
-        arInfo.setText("Arduino connected");
+        arInfo.setTextColor(Color.GREEN);
     }
 
     @Override
     public void onArduinoDetached() {
         // arduino detached from phone
-        arInfo.setText("Arduino deconnected");
+        arInfo.setTextColor(Color.RED);
     }
 
     @Override
@@ -96,5 +126,10 @@ public class ControlDeviceActivity extends AppCompatActivity implements ArduinoL
     public void sendTextToArduino(View view) {
         arduino.send(arTextSend.getText().toString().getBytes());
         arTextSend.setText("");
+    }
+
+    public void showScanDeviceDialog(View view) {
+        Intent intent = new Intent(ControlDeviceActivity.this, BluetoothDeviceActivity.class);
+        startActivity(intent);
     }
 }
