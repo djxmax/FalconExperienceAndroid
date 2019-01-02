@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
@@ -15,12 +16,17 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothConfiguration;
+
+import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
 import fr.maximelucquin.falconexperience.bt.BluetoothChatService;
 import fr.maximelucquin.falconexperience.bt.Constants;
+import fr.maximelucquin.falconexperience.data.Item;
+import fr.maximelucquin.falconexperience.data.database.AppDatabase;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -29,6 +35,10 @@ import fr.maximelucquin.falconexperience.bt.Constants;
 public class PlayerActivity extends AppCompatActivity {
 
     private TextView bluetoothStatus;
+    private VideoView videoPlayer;
+    private String currentPlayingVideo;
+
+    private List<Item> items;
 
     private static final int REQUEST_ENABLE_BT = 3;
 
@@ -141,6 +151,10 @@ public class PlayerActivity extends AppCompatActivity {
         mContentView = findViewById(R.id.fullscreen_content);
 
         bluetoothStatus = findViewById(R.id.bluetoothStatus);
+        videoPlayer = findViewById(R.id.videoPlayer);
+        currentPlayingVideo = "";
+
+        items = AppDatabase.getAppDatabase(getApplicationContext()).itemDAO().getAllItems();
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -287,6 +301,7 @@ public class PlayerActivity extends AppCompatActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            System.out.println(msg);
             switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
@@ -314,7 +329,7 @@ public class PlayerActivity extends AppCompatActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    //TODO
+                    decodeData(readMessage);
                     System.out.println(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -330,4 +345,72 @@ public class PlayerActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    //PROCESS
+
+    private void decodeData(String message) {
+        String[] separated = message.split("#");
+        for (int i = 0; i < separated.length;i++) {
+            String str = separated[i];
+            String value = str.trim();
+            String[] values = value.split("-");
+            if (values.length != 2) {
+                continue;
+            }
+
+            String item = values[0];
+            String actionFreq = values[1];
+            String action = "";
+            String freq = "";
+            String[] values2 = actionFreq.split("$");
+            if (values2.length == 1) {
+                action = values2[0];
+            } else if (values2.length == 2){
+                action = values2[0];
+                freq = values2[1];
+            }
+            //System.out.println("item : "+item+" action : "+action+" freq : "+freq);
+
+            for (int j = 0; j < items.size(); j++) {
+                if (items.get(j).getName().equals(item)) {
+                    if (action.equals("ON")) {
+                        items.get(j).enabled = true;
+                    } else {
+                        items.get(j).enabled = false;
+                    }
+                }
+            }
+
+            if (action.equals("ON")) {
+                tryToPlayMedia(item, true);
+            } else {
+                tryToPlayMedia(item, false);
+            }
+
+        }
+    }
+
+    private void tryToPlayMedia(String name, boolean play) {
+        if (items == null || name == null) {
+            return;
+        }
+
+        if (play) {
+            for (Item item : items) {
+                if (item.getName().equals(name) && item.getFileURL() != null && !item.getFileURL().isEmpty()) {
+                    Uri fileURI = Uri.parse(item.getFileURL());
+                    videoPlayer.setVideoURI(fileURI);
+                    videoPlayer.requestFocus();
+                    videoPlayer.start();
+                }
+            }
+        } else {
+            if (currentPlayingVideo.equals(name)) {
+                videoPlayer.stopPlayback();
+            }
+        }
+
+
+    }
 }
