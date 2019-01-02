@@ -52,10 +52,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:ems="10"
+        android:focusable="false"
         android:inputType="textMultiLine"
         android:singleLine="false"
         android:textColor="@android:color/white"
-        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/controlArSendText" />
@@ -83,14 +83,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button20"
+        android:id="@+id/button21"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:onClick="showScanDeviceDialog"
-        android:text="Appareil bluetooth"
+        android:onClick="showBluettothSecure"
+        android:text="Bluetooth Secure"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/controlArReceiveText" />
 
@@ -100,6 +100,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:checkedButton="@+id/radioArduino"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/controlArSendText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,22 +108,48 @@
         app:layout_constraintTop_toBottomOf="@+id/controlArInfo">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioArduino"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:buttonTint="@android:color/white"
+            android:onClick="onRadioButtonClicked"
             android:text="Arduino"
             android:textColor="@android:color/white" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioBluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:buttonTint="@android:color/white"
+            android:onClick="onRadioButtonClicked"
             android:text="Bluetooth"
             android:textColor="@android:color/white" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/button20"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="16dp"
+        android:onClick="showBluettothDiscoverable"
+        android:text="Bluetooth Discoverable"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/controlArReceiveText" />
+
+    <Button
+        android:id="@+id/button22"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:onClick="showBluettothInsecure"
+        android:text="Bluetooth Insecure"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/controlArReceiveText" />
 
 </android.support.constraint.ConstraintLayout>
