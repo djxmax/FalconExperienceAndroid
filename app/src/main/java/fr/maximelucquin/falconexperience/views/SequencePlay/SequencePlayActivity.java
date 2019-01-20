@@ -524,13 +524,17 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
         for (String str: dataToSend) {
             strTosend = strTosend + str + " ";
         }
-        System.out.println("SEND : "+strTosend);
+        //System.out.println("SEND : "+strTosend);
 
         if (!strTosend.isEmpty() && arduino.isOpened()) {
             arduino.send(strTosend.getBytes());
-            sendBluetoothMessage(strTosend);
-            dataToSend.clear();
         }
+
+        if(!strTosend.isEmpty() && (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)) {
+            System.out.println("bla");
+            sendBluetoothMessage(strTosend);
+        }
+
         dataToSend.clear();
     }
 
@@ -702,6 +706,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
+            System.out.println(send);
             mChatService.write(send);
 
         }

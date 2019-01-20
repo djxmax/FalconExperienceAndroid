@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -20,6 +22,7 @@ import android.widget.VideoView;
 
 import com.github.douglasjunior.bluetoothclassiclibrary.BluetoothConfiguration;
 
+import java.io.IOException;
 import java.util.List;
 
 import fr.maximelucquin.falconexperience.R;
@@ -37,6 +40,12 @@ public class PlayerActivity extends AppCompatActivity {
     private TextView bluetoothStatus;
     private VideoView videoPlayer;
     private String currentPlayingVideo;
+    private MediaPlayer musicPlayer;
+    private String currentPlayingMusic;
+    private MediaPlayer soundPlayer;
+    private String currentPlayingSound;
+    private MediaPlayer alarmPlayer;
+    private String currentPlayingAlarm;
 
     private List<Item> items;
 
@@ -153,10 +162,47 @@ public class PlayerActivity extends AppCompatActivity {
         bluetoothStatus = findViewById(R.id.bluetoothStatus);
         videoPlayer = findViewById(R.id.videoPlayer);
         currentPlayingVideo = "";
+        currentPlayingMusic = "";
+        currentPlayingSound = "";
+        currentPlayingAlarm = "";
 
         items = AppDatabase.getAppDatabase(getApplicationContext()).itemDAO().getAllItems();
 
+        videoPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            public void onCompletion(MediaPlayer mp)
+            {
+                videoPlayer.setVisibility(View.GONE);
+                currentPlayingVideo = "";
+            }
+        });
 
+        musicPlayer = new MediaPlayer();
+        musicPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            public void onCompletion(MediaPlayer mp)
+            {
+                currentPlayingMusic = "";
+            }
+        });
+
+        alarmPlayer = new MediaPlayer();
+        alarmPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            public void onCompletion(MediaPlayer mp)
+            {
+                currentPlayingAlarm = "";
+            }
+        });
+
+        soundPlayer = new MediaPlayer();
+        soundPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
+        {
+            public void onCompletion(MediaPlayer mp)
+            {
+                currentPlayingSound = "";
+            }
+        });
         // Set up the user interaction to manually show or hide the system UI.
         /*mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,7 +347,7 @@ public class PlayerActivity extends AppCompatActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            System.out.println(msg);
+            //System.out.println(msg);
             switch (msg.what) {
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
@@ -330,7 +376,7 @@ public class PlayerActivity extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     decodeData(readMessage);
-                    System.out.println(readMessage);
+                    //System.out.println(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -370,9 +416,9 @@ public class PlayerActivity extends AppCompatActivity {
                 action = values2[0];
                 freq = values2[1];
             }
-            //System.out.println("item : "+item+" action : "+action+" freq : "+freq);
+            System.out.println("item : "+item+" action : "+action+" freq : "+freq);
 
-            for (int j = 0; j < items.size(); j++) {
+            /*for (int j = 0; j < items.size(); j++) {
                 if (items.get(j).getName().equals(item)) {
                     if (action.equals("ON")) {
                         items.get(j).enabled = true;
@@ -380,7 +426,7 @@ public class PlayerActivity extends AppCompatActivity {
                         items.get(j).enabled = false;
                     }
                 }
-            }
+            }*/
 
             if (action.equals("ON")) {
                 tryToPlayMedia(item, true);
@@ -397,17 +443,92 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         if (play) {
+
             for (Item item : items) {
-                if (item.getName().equals(name) && item.getFileURL() != null && !item.getFileURL().isEmpty()) {
-                    Uri fileURI = Uri.parse(item.getFileURL());
-                    videoPlayer.setVideoURI(fileURI);
-                    videoPlayer.requestFocus();
-                    videoPlayer.start();
+
+                if (item.getName().equals(name) && (item.getFileURL() != null) && !item.getFileURL().isEmpty()) {
+                    if (item.getType() == Item.ItemType.VIDEO) {
+                        Uri fileURI = Uri.parse(item.getFileURL());
+                        videoPlayer.setMediaController(null);
+                        videoPlayer.setVideoURI(fileURI);
+                        videoPlayer.requestFocus();
+                        videoPlayer.start();
+                        videoPlayer.setVisibility(View.VISIBLE);
+                        currentPlayingVideo = name;
+                        break;
+                    }
+
+
+                    if ((item.getType() == Item.ItemType.MUSIC)) {
+
+                        Uri fileURI = Uri.parse(item.getFileURL());
+
+                        musicPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try {
+                            musicPlayer.setDataSource(getApplicationContext(), fileURI);
+                            musicPlayer.prepare(); // might take long! (for buffering, etc)
+                            musicPlayer.start();
+                            currentPlayingMusic = name;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    if ((item.getType() == Item.ItemType.SOUND)) {
+                        Uri fileURI = Uri.parse(item.getFileURL());
+
+                        soundPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try {
+                            soundPlayer.setDataSource(getApplicationContext(), fileURI);
+                            soundPlayer.prepare(); // might take long! (for buffering, etc)
+                            soundPlayer.start();
+                            currentPlayingSound = name;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    if ((item.getType() == Item.ItemType.ALARM)) {
+                        Uri fileURI = Uri.parse(item.getFileURL());
+
+                        alarmPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try {
+                            alarmPlayer.setDataSource(getApplicationContext(), fileURI);
+                            alarmPlayer.prepare(); // might take long! (for buffering, etc)
+                            alarmPlayer.start();
+                            currentPlayingAlarm = name;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
                 }
+
+
             }
         } else {
             if (currentPlayingVideo.equals(name)) {
                 videoPlayer.stopPlayback();
+                videoPlayer.setVisibility(View.GONE);
+                currentPlayingVideo = "";
+            }
+
+            if (currentPlayingMusic.equals(name)) {
+                musicPlayer.stop();
+                currentPlayingMusic = "";
+            }
+
+            if (currentPlayingSound.equals(name)) {
+                soundPlayer.stop();
+                currentPlayingSound = "";
+            }
+
+            if (currentPlayingAlarm.equals(name)) {
+                soundPlayer.stop();
+                currentPlayingAlarm = "";
             }
         }
 
