@@ -63,6 +63,10 @@ public class DBManager extends AppCompatActivity {
         findDBFile(DB_SHM_READ_CODE);
     }
 
+    public void openImportDBRessource(View view) {
+        copyAttachedDatabaseFromRessource();
+    }
+
     public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -184,6 +188,8 @@ public class DBManager extends AppCompatActivity {
             outputWAL.close();
             fisWAL.close();
 
+            Toast.makeText(this, "Base exportée",
+                    Toast.LENGTH_SHORT).show();
 
         } catch (IOException e) {
             Log.e("dbBackup:", e.getMessage());
@@ -270,11 +276,93 @@ public class DBManager extends AppCompatActivity {
 
             AppDatabase.destroyInstance();
             AppDatabase.getAppDatabase(getApplicationContext());
+
+            Toast.makeText(this, "Base importée",
+                    Toast.LENGTH_SHORT).show();
         }
         catch (IOException e) {
             System.out.println(e);
             e.printStackTrace();
         }
     }
+
+    private void copyAttachedDatabaseFromRessource() {
+        getResources().openRawResource(R.raw.falcon_experience_db);
+        File dbPath = new File(this.getDatabasePath(dbName).getAbsolutePath());
+        File dbPathSHM = new File(this.getDatabasePath(dbName).getAbsolutePath()+"-shm");
+        File dbPathWAL = new File(this.getDatabasePath(dbName).getAbsolutePath()+"-wal");
+
+
+        System.out.println(this.getDatabasePath(dbName).getAbsolutePath());
+        // If the database already exists, return
+        /*if (dbPath.exists()) {
+            System.out.println("DB already Exist");
+            return;
+        }*/
+
+        // Make sure we have a path to the file
+        //dbPath.getParentFile().mkdirs();
+
+        // Try to copy database file
+        try {
+            final InputStream inputStream = getResources().openRawResource(R.raw.falcon_experience_db);
+            //Log.e("InputStream Size","Size " + inputStream);
+            final OutputStream output = new FileOutputStream(dbPath);
+
+            byte[] buffer = new byte[8192];
+            int length;
+
+            while ((length = inputStream.read(buffer, 0, 8192)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            output.flush();
+            output.close();
+            inputStream.close();
+
+            final InputStream inputStreamSHM = getResources().openRawResource(R.raw.falcon_experience_db_shm);
+            //Log.e("InputStream Size","Size " + inputStream);
+            final OutputStream outputSHM = new FileOutputStream(dbPathSHM);
+
+            byte[] bufferSHM = new byte[8192];
+            int lengthSHM;
+
+            while ((lengthSHM = inputStreamSHM.read(bufferSHM, 0, 8192)) > 0) {
+                outputSHM.write(bufferSHM, 0, lengthSHM);
+            }
+
+            outputSHM.flush();
+            outputSHM.close();
+            inputStreamSHM.close();
+
+            final InputStream inputStreamWAL = getResources().openRawResource(R.raw.falcon_experience_db_wal);
+            //Log.e("InputStream Size","Size " + inputStream);
+            final OutputStream outputWAL = new FileOutputStream(dbPathWAL);
+
+            byte[] bufferWAL = new byte[8192];
+            int lengthWAL;
+
+            while ((lengthWAL = inputStreamWAL.read(bufferWAL, 0, 8192)) > 0) {
+                outputWAL.write(bufferWAL, 0, lengthWAL);
+            }
+
+            outputWAL.flush();
+            outputWAL.close();
+            inputStreamWAL.close();
+
+
+            AppDatabase.destroyInstance();
+            AppDatabase.getAppDatabase(getApplicationContext());
+
+            Toast.makeText(this, "Base initiale importée",
+                    Toast.LENGTH_SHORT).show();
+        }
+        catch (IOException e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
