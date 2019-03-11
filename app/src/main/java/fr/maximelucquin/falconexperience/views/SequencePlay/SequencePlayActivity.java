@@ -546,11 +546,11 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
             str = "$STOP";
         }
 
-        if (arduino.isOpened()) {
+        if (arduino!= null && arduino.isOpened()) {
             arduino.send(str.getBytes());
         }
 
-        if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+        if(mChatService != null && mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
             sendBluetoothMessage(str);
         }
     }
@@ -601,7 +601,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
 
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
-        if (!mBluetoothAdapter.isEnabled()) {
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
             // Otherwise, setup the chat session
