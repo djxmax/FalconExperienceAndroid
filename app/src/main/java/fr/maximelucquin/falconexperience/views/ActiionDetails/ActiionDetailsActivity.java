@@ -27,6 +27,7 @@ public class ActiionDetailsActivity extends AppCompatActivity {
     private EditText actiionDuration;
     private CheckBox actiionBlink;
     private EditText actiionBlinkFreq;
+    private EditText actiionNote;
     private TextView actiionType;
 
     @Override
@@ -40,6 +41,7 @@ public class ActiionDetailsActivity extends AppCompatActivity {
         actiionDuration = (EditText) findViewById(R.id.actiionDuration);
         actiionBlink = (CheckBox) findViewById(R.id.actiionBlink);
         actiionBlinkFreq = (EditText) findViewById(R.id.actiionBlinkFreq);
+        actiionNote = (EditText) findViewById(R.id.actiionNote);
         actiionType = (TextView) findViewById(R.id.actiionType);
 
         getData();
@@ -53,6 +55,10 @@ public class ActiionDetailsActivity extends AppCompatActivity {
         actiionDuration.setText(""+actiion.getDuration());
         actiionBlink.setChecked(actiion.isBlink());
         actiionBlinkFreq.setText(""+actiion.getBlinkFreq());
+
+        if (actiion.getNote() != null) {
+            actiionNote.setText(actiion.getNote());
+        }
 
         setActionType();
     }
@@ -119,6 +125,7 @@ public class ActiionDetailsActivity extends AppCompatActivity {
         actiion.setDuration(Integer.parseInt(actiionDuration.getText().toString()));
         actiion.setBlink(actiionBlink.isChecked());
         actiion.setBlinkFreq(Integer.parseInt(actiionBlinkFreq.getText().toString()));
+        actiion.setNote(actiionNote.getText().toString());
 
         actiion.save(getApplicationContext());
         super.onBackPressed();

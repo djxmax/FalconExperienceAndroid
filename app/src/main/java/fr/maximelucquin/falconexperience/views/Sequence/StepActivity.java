@@ -78,7 +78,8 @@ public class StepActivity extends AppCompatActivity {
         super.onResume();
 
         getSteps();
-        adapter.notifyDataSetChanged();
+        adapter = new StepAdapter(steps, this);
+        recyclerView.setAdapter(adapter);
 
     }
 

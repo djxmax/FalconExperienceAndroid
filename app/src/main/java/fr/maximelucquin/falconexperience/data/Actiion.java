@@ -25,6 +25,7 @@ public class Actiion {
     @PrimaryKey
     public String id;
     public String stepId;
+    public String note;
     @Ignore
     public List<Item> items;
     public int delay;
@@ -127,6 +128,14 @@ public class Actiion {
 
     public void setType(ActiionType type) {
         this.type = type;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public void save(Context context) {

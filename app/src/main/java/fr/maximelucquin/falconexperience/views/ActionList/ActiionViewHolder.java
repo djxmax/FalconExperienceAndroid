@@ -12,6 +12,7 @@ public class ActiionViewHolder extends RecyclerView.ViewHolder{
 
     private TextView actiionType;
     private TextView actiionItems;
+    private TextView actiionNote;
 
 
 
@@ -20,6 +21,7 @@ public class ActiionViewHolder extends RecyclerView.ViewHolder{
 
         actiionType = (TextView) itemView.findViewById(R.id.actiion_type);
         actiionItems = (TextView) itemView.findViewById(R.id.actiion_items);
+        actiionNote = (TextView) itemView.findViewById(R.id.actiion_note);
     }
 
     public void bind(Actiion actiion, Context context){
@@ -40,6 +42,12 @@ public class ActiionViewHolder extends RecyclerView.ViewHolder{
             actiionItems.setText("Nombre d'item :"+actiion.getItems(context).size());
         } else {
             actiionItems.setText("Nombre d'item : inconnu");
+        }
+
+        if(actiion.getNote() != null) {
+            actiionNote.setText("Note : " + actiion.getNote());
+        } else {
+            actiionNote.setText("Note : aucune");
         }
 
     }

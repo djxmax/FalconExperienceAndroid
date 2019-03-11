@@ -14,6 +14,7 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
     private TextView stepOrder;
     private TextView stepTrigger;
     private TextView stepAction;
+    private TextView stepNote;
     private LinearLayout stepBackground;
 
     public StepViewHolder(View itemView) {
@@ -22,6 +23,7 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
         stepOrder = (TextView) itemView.findViewById(R.id.step_order);
         stepTrigger = (TextView) itemView.findViewById(R.id.step_trigger);
         stepAction = (TextView) itemView.findViewById(R.id.step_action);
+        stepNote = (TextView) itemView.findViewById(R.id.step_note);
         stepBackground = (LinearLayout) itemView.findViewById(R.id.step_background);
     }
 
@@ -44,6 +46,12 @@ public class StepViewHolder extends RecyclerView.ViewHolder{
             stepBackground.setBackgroundResource(R.color.colorAccent);
         } else {
             stepBackground.setBackgroundResource(R.color.backgroundClear);
+        }
+
+        if (step.getNote() != null) {
+            stepNote.setText("Note : " + step.getNote());
+        } else {
+            stepNote.setText("Note : aucune");
         }
 
     }

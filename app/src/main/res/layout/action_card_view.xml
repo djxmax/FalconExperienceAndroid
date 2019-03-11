@@ -48,6 +48,17 @@
             android:textSize="12sp"
             tools:text="Paris" />
 
+        <TextView
+            android:id="@+id/actiion_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="sans-serif"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            tools:text="Paris" />
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

@@ -25,6 +25,7 @@ public class Triggeer {
     @PrimaryKey
     public String id;
     public String stepId;
+    public String note;
     @Ignore
     public List<Item> items;
     @TypeConverters(TriggeerTypeConverter.class)
@@ -94,6 +95,14 @@ public class Triggeer {
 
     public void setType(TriggeerType type) {
         this.type = type;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public void save(Context context) {

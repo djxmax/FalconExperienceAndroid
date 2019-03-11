@@ -18,7 +18,7 @@ import fr.maximelucquin.falconexperience.data.Sequence;
 import fr.maximelucquin.falconexperience.data.Step;
 import fr.maximelucquin.falconexperience.data.Triggeer;
 
-@Database(entities = {Sequence.class, Step.class, Triggeer.class, Actiion.class, Item.class, TriggeerItemJoin.class, ActiionItemJoin.class}, version = 2)
+@Database(entities = {Sequence.class, Step.class, Triggeer.class, Actiion.class, Item.class, TriggeerItemJoin.class, ActiionItemJoin.class}, version = 3)
 @TypeConverters({ActiionTypeConverter.class,ItemTypeConverter.class,ItemPutTypeConverter.class,TriggeerTypeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

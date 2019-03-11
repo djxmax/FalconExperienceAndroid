@@ -23,6 +23,7 @@ public class Step implements Comparable<Step> {
     @PrimaryKey
     public String id;
     public String sequenceId;
+    public String note;
     public int order;
     @Ignore
     public Triggeer triggeer;
@@ -65,6 +66,14 @@ public class Step implements Comparable<Step> {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Triggeer getTriggeer(Context context) {

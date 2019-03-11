@@ -21,6 +21,7 @@ public class StepDetailsActivity extends AppCompatActivity {
 
     private TextView order;
     private EditText timeTrigger;
+    private EditText note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class StepDetailsActivity extends AppCompatActivity {
 
         order = (TextView) findViewById(R.id.stepDetailsOrder);
         timeTrigger = (EditText) findViewById(R.id.stepDetailsTimeTrigger);
+        note = (EditText) findViewById(R.id.stepDetailsNote);
 
         String stepId = getIntent().getExtras().getString("stepId");
         step = AppDatabase.getAppDatabase(getApplicationContext()).stepDAO().getStep(stepId);
@@ -36,6 +38,9 @@ public class StepDetailsActivity extends AppCompatActivity {
         int theOrder = step.getOrder() + 1;
         order.setText("Numéro d'étape : "+theOrder);
         timeTrigger.setText(""+step.getTimeTrigger(), TextView.BufferType.EDITABLE);
+        if(step.getNote() != null){
+            note.setText(step.getNote());
+        }
 
 
     }
@@ -73,6 +78,10 @@ public class StepDetailsActivity extends AppCompatActivity {
     public void saveStep(View view) {
         if (timeTrigger.getText().toString() != "0") {
             step.setTimeTrigger(Integer.parseInt(timeTrigger.getText().toString()));
+        }
+
+        if (!note.getText().toString().isEmpty()) {
+            step.setNote(note.getText().toString());
         }
         step.save(getApplicationContext());
         super.onBackPressed();
