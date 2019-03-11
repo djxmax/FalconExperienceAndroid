@@ -258,6 +258,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
                 if (currentStep == -1) {
                     currentStep = 0;
                 }
+                sendStartOrStop(false);
                 launchPlayer();
                 break;
             case 1:
@@ -286,6 +287,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
                 playStatus = STOP;
                 statusView.setText("STOP");
                 currentStep = -1;
+                sendStartOrStop(true);
                 break;
             case 3:
                 //back
@@ -300,6 +302,7 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
                 playStatus = STOP;
                 statusView.setText("STOP");
                 currentStep = -1;
+                sendStartOrStop(true);
                 break;
             default:
                 break;
@@ -531,11 +534,25 @@ public class SequencePlayActivity extends AppCompatActivity implements ArduinoLi
         }
 
         if(!strTosend.isEmpty() && (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)) {
-            System.out.println("bla");
             sendBluetoothMessage(strTosend);
         }
 
         dataToSend.clear();
+    }
+
+    private void sendStartOrStop(boolean stop){
+        String str = "$START";
+        if (stop) {
+            str = "$STOP";
+        }
+
+        if (arduino.isOpened()) {
+            arduino.send(str.getBytes());
+        }
+
+        if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            sendBluetoothMessage(str);
+        }
     }
 
     private void decodeData(String data) {
